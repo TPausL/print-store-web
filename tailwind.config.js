@@ -2,7 +2,13 @@
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
-		extend: {}
+		extend: {},
+		fontFamily: {
+			sans: ['Poppins', 'sans-serif']
+		}
 	},
-	plugins: [require('daisyui')]
+	plugins: [require('@tailwindcss/typography'), require('daisyui')],
+	daisyui: {
+		themes: ['pastel']
+	}
 };

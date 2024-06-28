@@ -3,17 +3,39 @@
 
 import prisma from '$lib/prisma';
 
-//import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
 
 export const load = (async () => {
-    const response = await prisma.product.findMany({
+    const products = await prisma.product.findMany({
         include: {
             color: true,
             size: true,
-            shape: true
-        }
-    });
-    return { products: response };
+            shape: true,
+        },
 
-}) //satisfies PageServerLoad;
+        orderBy: [
+            {
+                size: {
+                    width: 'asc'
+                }
+            },
+            {
+                color: {
+                    hex: 'asc'
+                }
+            },
+            {
+                shape: {
+                    text: 'asc'
+                }
+            }
+        ]
+    });
+    const colors = await prisma.color.findMany();
+    console.log(colors)
+    const sizes = await prisma.size.findMany();
+    const shapes = await prisma.shape.findMany();
+    return { products, colors, sizes, shapes };
+
+}) satisfies PageServerLoad;

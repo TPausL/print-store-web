@@ -1,14 +1,10 @@
-<script>
-    export let data;
+<script lang="ts">
+	import Content from './Content.svelte';
+	import Sidebar from './Sidebar.svelte';
+	export let data;
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<ul>
-    {#each data.products as product}
-        <li>
-            <p>{product.color.hex}</p>
-        </li>
-        <button class="btn">Hello</button>
-    {/each}
-</ul>
+<div class="flex flex-row dir justify-center gap-5 h-[calc(100%-68px)] p-5">
+	<Sidebar {data} />
+	<Content products={data.products} />
+</div>
