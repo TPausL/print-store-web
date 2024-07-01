@@ -1,46 +1,191 @@
 <script lang="ts">
-	import type {PageData} from './$types';
-	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome'
-	import { faHashtag, faPen, faRulerHorizontal, faShapes, faSwatchbook } from '@fortawesome/free-solid-svg-icons'
+	import type { PageData } from './$types';
+	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import _ from 'lodash';
+	const { map, uniq, sumBy, capitalize, filter, find, remove, orderBy } = _;
+	enum SortCol {
+		SIZE = 'size.text',
+		COLOR = 'color.text',
+		SHAPE = 'shape.text',
+		COUNT = 'count'
+	}
+
+	import {
+		faHashtag,
+		faPen,
+		faRulerHorizontal,
+		faSearch,
+		faShapes,
+		faSort,
+		faSortDown,
+		faSortUp,
+		faSwatchbook
+	} from '@fortawesome/free-solid-svg-icons';
 	export let data: PageData;
 	let { products, colors, shapes, sizes } = data;
-	import _ from 'lodash';
-	import Grid from 'gridjs-svelte';
-	import { html } from 'gridjs';
-	const { map, uniq, sumBy, capitalize } = _; 
-	import type {Product} from '@prisma/client';
+
+	let sortBy: { col: SortCol; dir: 'asc' | 'desc' } | [] = [];
+
+	$: filtered_prods = orderBy(
+		filter(products, (prod) => {
+			return (
+				prod.size.text.toLowerCase().includes(search.toLowerCase()) ||
+				prod.color.text.toLowerCase().includes(search.toLowerCase()) ||
+				prod.shape.text.toLowerCase().includes(search.toLowerCase()) ||
+				prod.count.toString().includes(search)
+			);
+		}),
+		[sortBy.map((s) => s.col)],
+		[sortBy.map((s) => s.dir)]
+	);
+	$: console.log(sortBy.map((s) => s.col));
+	$: console.log(sortBy.map((s) => s.dir));
+	let search = '';
+	let icons = [faSort, faSortUp, faSortDown];
+	$: test = 0;
+	//$: console.log(sortBy);
+	//$: console.log(sortBy);
+	function toggleSort(col: SortCol) {
+		let sort = find(sortBy, { col: col });
+		if (!sort) {
+			test = 1;
+			sortBy = [{ col, dir: 'asc' }, ...filter(sortBy, (s) => s.col !== col)];
+		} else {
+			if (sort.dir === 'asc') {
+				test = 2;
+				let new_SortBy = [{ col, dir: 'desc' }, ...filter(sortBy, (s) => s.col !== col)];
+				sortBy = [...new_SortBy];
+			} else {
+				test = 0;
+				sortBy = [...filter(sortBy, (s) => s.col !== col)];
+			}
+		}
+	}
 
 	function handleMinus(e) {
 		console.log(e);
 	}
+	function getSortIcon(col: SortCol) {
+		let pref = 'fa-solid fa-sort';
+		let sort = find(sortBy, { col: col });
+		if (sort) {
+			return pref + (sort.dir === 'asc' ? '-up' : '-down');
+		} else {
+			return pref;
+		}
+	}
+	$: sortSizeIcon = getSortIcon(SortCol.SIZE);
 </script>
 
-<div class="card shadow-2xl basis-3/4 p-5 bg-gradient-to-tr from-secondary to-accent">
-
+<div class="card shadow-2xl basis-3/4 bg-gradient-to-tr from-secondary to-accent p-5">
+	<label
+		class="input input-bordered flex items-center gap-2 focus-within:outline-none focus:outline-none"
+	>
+		<FontAwesomeIcon icon={faSearch} />
+		<input bind:value={search} type="text" class="grow" placeholder="Search" />
+	</label>
+	{search}
 	<div class="h-full overflow-scroll">
+		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent">
+			<thead>
+				<tr class="bg-transparent border-none text-base backdrop-blur-sm">
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
+							<button
+								on:click={() => toggleSort(SortCol.SIZE)}
+								class="btn btn-circle btn-ghost ml-auto"
+							>
+								{#if find(sortBy, { col: SortCol.SIZE })}
+									{#if find(sortBy, { col: SortCol.SIZE }).dir === 'asc'}
+										<FontAwesomeIcon icon={faSortUp} />
+									{:else}
+										<FontAwesomeIcon icon={faSortDown} />
+									{/if}
+								{:else}
+									<FontAwesomeIcon icon={faSort} />
+								{/if}
+							</button>
+						</div>
+					</th>
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
+								on:click={() => toggleSort(SortCol.COLOR)}
+								class="btn btn-circle btn-ghost ml-auto"
+							>
+								{#if find(sortBy, { col: SortCol.COLOR })}
+									{#if find(sortBy, { col: SortCol.COLOR }).dir === 'asc'}
+										<FontAwesomeIcon icon={faSortUp} />
+									{:else}
+										<FontAwesomeIcon icon={faSortDown} />
+									{/if}
+								{:else}
+									<FontAwesomeIcon icon={faSort} />
+								{/if}
+							</button>
+						</div></th
+					>
 
-	<table class="table table-pin-rows text-lg font-medium w-full bg-transparent">
-		<thead>
-			<tr class="bg-transparent border-none text-base backdrop-blur-sm">
-				<th><FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe</th>
-				<th><FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe</th>
-				<th><FontAwesomeIcon class="mr-1" icon={faShapes} />Form</th>
-				<th><FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl</th>
-				<th><FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten</th>
-			</tr>
-		</thead>
-		<tbody>
-		{#each products as prod}
-		<tr class="p-1 border-none">
-			<td>{prod.size.text}</td>
-			<td><i class="fa-solid fa-circle mr-2" style="color: {prod.color.hex}"/>{prod.color.text}</td>
-			<td>{prod.shape.text}</td>
-			<td>{prod.count}</td>
-			
-		</tr>
-		{/each}
-	</tbody>
-		
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
+								on:click={() => toggleSort(SortCol.SHAPE)}
+								class="btn btn-circle btn-ghost ml-auto"
+							>
+								{#if find(sortBy, { col: SortCol.SHAPE })}
+									{#if find(sortBy, { col: SortCol.SHAPE }).dir === 'asc'}
+										<FontAwesomeIcon icon={faSortUp} />
+									{:else}
+										<FontAwesomeIcon icon={faSortDown} />
+									{/if}
+								{:else}
+									<FontAwesomeIcon icon={faSort} />
+								{/if}
+							</button>
+						</div></th
+					>
+
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl<button
+								on:click={() => toggleSort(SortCol.COUNT)}
+								class="btn btn-circle btn-ghost ml-auto"
+							>
+								{#if find(sortBy, { col: SortCol.COUNT })}
+									{#if find(sortBy, { col: SortCol.COUNT }).dir === 'asc'}
+										<FontAwesomeIcon icon={faSortUp} />
+									{:else}
+										<FontAwesomeIcon icon={faSortDown} />
+									{/if}
+								{:else}
+									<FontAwesomeIcon icon={faSort} />
+								{/if}
+							</button>
+						</div></th
+					>
+
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten
+						</div></th
+					>
+				</tr>
+			</thead>
+			<tbody>
+				{#each filtered_prods as prod}
+					<tr class="p-1 border-none">
+						<td>{prod.size.text}</td>
+						<td
+							><i class="fa-solid fa-circle mr-2" style="color: {prod.color.hex}" />{prod.color
+								.text}</td
+						>
+						<td>{prod.shape.text}</td>
+						<td><span class="badge badge-primary badge-secondary">{prod.count}</span></td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	</div>
 
 	<!-- <Grid
@@ -117,5 +262,5 @@
 
 <style global>
 	@import 'https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.css';
-	@import "./page.css";
+	@import './page.css';
 </style>
