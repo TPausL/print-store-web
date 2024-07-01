@@ -6,5 +6,5 @@
 
 <div class="flex flex-row dir justify-center gap-5 h-[calc(100%-68px)] p-5">
 	<Sidebar {data} />
-	<Content products={data.products} />
+	<Content {data} />
 </div>

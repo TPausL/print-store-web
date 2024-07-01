@@ -37,11 +37,14 @@
 	"type": "module",
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^6.5.2",
+		"@fortawesome/free-solid-svg-icons": "^6.5.2",
+		"@fortawesome/svelte-fontawesome": "^0.2.2",
 		"@prisma/client": "^5.16.1",
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/lodash": "^4.17.6",
 		"gridjs": "^6.2.0",
 		"gridjs-svelte": "^2.1.1",
 		"lodash": "^4.17.21"
-	}
+	},
+	"packageManager": "pnpm@9.2.0+sha512.98a80fd11c2e7096747762304106432b3ddc67dcf54b5a8c01c93f68a2cd5e05e6821849522a06fb76284d41a2660d5e334f2ee3bbf29183bf2e739b1dafa771"
 }
