@@ -2,7 +2,8 @@
 	import _ from 'lodash';
 	import type { PageData } from './$types';
 	export let data: PageData;
-	let { products, colors, shapes, sizes } = data;
+	let { colors, shapes, sizes } = data;
+	$: products = data.products;
 	const { map, uniq, sumBy } = _;
 </script>
 
@@ -21,9 +22,9 @@
 				<i class="fa-solid fa-swatchbook fa-2xl" />
 			</div>
 			<div class="stat-title">Farben im Lager</div>
-			<div class="stat-value">{uniq(map(products, 'color_id')).length}</div>
+			<div class="stat-value">{uniq(map(products, 'colorId')).length}</div>
 			<div class="stat-desc">
-				Das entspricht {((100 * uniq(map(products, 'color_id')).length) / colors.length) | 0} % aller
+				Das entspricht {((100 * uniq(map(products, 'colorId')).length) / colors.length) | 0} % aller
 				Farben.
 			</div>
 		</div>
@@ -32,9 +33,9 @@
 				<i class="fa-solid fa-shapes fa-2xl" />
 			</div>
 			<div class="stat-title">Formen im Lager</div>
-			<div class="stat-value">{uniq(map(products, 'shape_id')).length}</div>
+			<div class="stat-value">{uniq(map(products, 'shapeId')).length}</div>
 			<div class="stat-desc">
-				Das entspricht {((100 * uniq(map(products, 'shape_id')).length) / shapes.length) | 0} % aller
+				Das entspricht {((100 * uniq(map(products, 'shapeId')).length) / shapes.length) | 0} % aller
 				Formen.
 			</div>
 		</div>

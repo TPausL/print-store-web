@@ -4,7 +4,7 @@
 	import _ from 'lodash';
 	const { map, uniq, sumBy, capitalize, filter, find, remove, orderBy } = _;
 	enum SortCol {
-		SIZE = 'size.text',
+		SIZE = 'size.width',
 		COLOR = 'color.text',
 		SHAPE = 'shape.text',
 		COUNT = 'count'
@@ -12,6 +12,7 @@
 
 	import {
 		faHashtag,
+		faMinus,
 		faPen,
 		faRulerHorizontal,
 		faSearch,
@@ -21,12 +22,13 @@
 		faSortUp,
 		faSwatchbook
 	} from '@fortawesome/free-solid-svg-icons';
+	import Row from './Row.svelte';
 	export let data: PageData;
-	let { products, colors, shapes, sizes } = data;
+	$: products = data.products;
 
-	let sortBy: { col: SortCol; dir: 'asc' | 'desc' } | [] = [];
+	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = [];
 
-	$: filtered_prods = orderBy(
+	$: filteredProds = orderBy(
 		filter(products, (prod) => {
 			return (
 				prod.size.text.toLowerCase().includes(search.toLowerCase()) ||
@@ -35,36 +37,24 @@
 				prod.count.toString().includes(search)
 			);
 		}),
-		[sortBy.map((s) => s.col)],
-		[sortBy.map((s) => s.dir)]
+		sortBy.map((s) => s.col),
+		sortBy.map((s) => s.dir)
 	);
-	$: console.log(sortBy.map((s) => s.col));
-	$: console.log(sortBy.map((s) => s.dir));
 	let search = '';
-	let icons = [faSort, faSortUp, faSortDown];
-	$: test = 0;
-	//$: console.log(sortBy);
-	//$: console.log(sortBy);
 	function toggleSort(col: SortCol) {
 		let sort = find(sortBy, { col: col });
 		if (!sort) {
-			test = 1;
-			sortBy = [{ col, dir: 'asc' }, ...filter(sortBy, (s) => s.col !== col)];
+			sortBy = [...filter(sortBy, (s) => s.col !== col), { col, dir: 'asc' }];
 		} else {
 			if (sort.dir === 'asc') {
-				test = 2;
-				let new_SortBy = [{ col, dir: 'desc' }, ...filter(sortBy, (s) => s.col !== col)];
-				sortBy = [...new_SortBy];
+				sortBy = [...filter(sortBy, (s) => s.col !== col), { col, dir: 'desc' }];
+				// sortBy = [...new_SortBy];
 			} else {
-				test = 0;
 				sortBy = [...filter(sortBy, (s) => s.col !== col)];
 			}
 		}
 	}
 
-	function handleMinus(e) {
-		console.log(e);
-	}
 	function getSortIcon(col: SortCol) {
 		let pref = 'fa-solid fa-sort';
 		let sort = find(sortBy, { col: col });
@@ -97,7 +87,7 @@
 								class="btn btn-circle btn-ghost ml-auto"
 							>
 								{#if find(sortBy, { col: SortCol.SIZE })}
-									{#if find(sortBy, { col: SortCol.SIZE }).dir === 'asc'}
+									{#if find(sortBy, { col: SortCol.SIZE })?.dir === 'asc'}
 										<FontAwesomeIcon icon={faSortUp} />
 									{:else}
 										<FontAwesomeIcon icon={faSortDown} />
@@ -115,7 +105,7 @@
 								class="btn btn-circle btn-ghost ml-auto"
 							>
 								{#if find(sortBy, { col: SortCol.COLOR })}
-									{#if find(sortBy, { col: SortCol.COLOR }).dir === 'asc'}
+									{#if find(sortBy, { col: SortCol.COLOR })?.dir === 'asc'}
 										<FontAwesomeIcon icon={faSortUp} />
 									{:else}
 										<FontAwesomeIcon icon={faSortDown} />
@@ -134,7 +124,7 @@
 								class="btn btn-circle btn-ghost ml-auto"
 							>
 								{#if find(sortBy, { col: SortCol.SHAPE })}
-									{#if find(sortBy, { col: SortCol.SHAPE }).dir === 'asc'}
+									{#if find(sortBy, { col: SortCol.SHAPE })?.dir === 'asc'}
 										<FontAwesomeIcon icon={faSortUp} />
 									{:else}
 										<FontAwesomeIcon icon={faSortDown} />
@@ -153,7 +143,7 @@
 								class="btn btn-circle btn-ghost ml-auto"
 							>
 								{#if find(sortBy, { col: SortCol.COUNT })}
-									{#if find(sortBy, { col: SortCol.COUNT }).dir === 'asc'}
+									{#if find(sortBy, { col: SortCol.COUNT })?.dir === 'asc'}
 										<FontAwesomeIcon icon={faSortUp} />
 									{:else}
 										<FontAwesomeIcon icon={faSortDown} />
@@ -173,16 +163,8 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each filtered_prods as prod}
-					<tr class="p-1 border-none">
-						<td>{prod.size.text}</td>
-						<td
-							><i class="fa-solid fa-circle mr-2" style="color: {prod.color.hex}" />{prod.color
-								.text}</td
-						>
-						<td>{prod.shape.text}</td>
-						<td><span class="badge badge-primary badge-secondary">{prod.count}</span></td>
-					</tr>
+				{#each filteredProds as prod}
+					<Row {prod} />
 				{/each}
 			</tbody>
 		</table>

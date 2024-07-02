@@ -3,47 +3,56 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DSN")
+  provider          = "postgresql"
+  url               = env("DSN")
+  shadowDatabaseUrl = env("SHADOW_DSN")
 }
 
 model Color {
-  id       String    @id @db.Uuid
-  text     String    @db.VarChar(50)
-  hex      String    @db.VarChar(9)
-  products Product[]
+  id        String    @id @db.Uuid
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  text      String    @db.VarChar(50)
+  hex       String    @db.VarChar(9)
+  products  Product[]
 
   @@map("colors")
 }
 
 model Product {
-  id       String @id @db.Uuid
-  color_id String @db.Uuid
-  size_id  String @db.Uuid
-  shape_id String @db.Uuid
-  count    Int
-  color    Color  @relation(fields: [color_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  shape    Shape  @relation(fields: [shape_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  size     Size   @relation(fields: [size_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id        String   @id @db.Uuid
+  colorId   String   @map("color_id") @db.Uuid
+  sizeId    String   @map("size_id") @db.Uuid
+  shapeId   String   @map("shape_id") @db.Uuid
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  count     Int
+  color     Color    @relation(fields: [colorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  shape     Shape    @relation(fields: [shapeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  size      Size     @relation(fields: [sizeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([color_id, size_id, shape_id])
+  @@unique([colorId, sizeId, shapeId])
   @@map("products")
 }
 
 model Shape {
-  id       String    @id @db.Uuid
-  text     String    @db.VarChar(50)
-  products Product[]
+  id        String    @id @db.Uuid
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  text      String    @db.VarChar(50)
+  products  Product[]
 
   @@map("shapes")
 }
 
 model Size {
-  id       String    @id @db.Uuid
-  text     String    @db.VarChar(50)
-  width    Float
-  height   Float
-  products Product[]
+  id        String    @id @db.Uuid
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  text      String    @db.VarChar(50)
+  width     Float
+  height    Float
+  products  Product[]
 
   @@map("sizes")
 }

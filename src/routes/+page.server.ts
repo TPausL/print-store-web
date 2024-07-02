@@ -6,36 +6,23 @@ import prisma from '$lib/prisma';
 import type { PageServerLoad } from './$types';
 
 
-export const load = (async () => {
-    const products = await prisma.product.findMany({
+export const load: PageServerLoad = async ({ fetch, depends }) => {
+    const products = prisma.product.findMany({
         include: {
             color: true,
             size: true,
             shape: true,
         },
+        orderBy: {
+            updatedAt: 'desc',
+        },
 
-        orderBy: [
-            {
-                size: {
-                    width: 'asc'
-                }
-            },
-            {
-                color: {
-                    hex: 'asc'
-                }
-            },
-            {
-                shape: {
-                    text: 'asc'
-                }
-            }
-        ]
     });
     const colors = await prisma.color.findMany();
-    console.log(colors)
     const sizes = await prisma.size.findMany();
     const shapes = await prisma.shape.findMany();
-    return { products, colors, sizes, shapes };
 
-}) satisfies PageServerLoad;
+    depends("app:db")
+    return { colors, sizes, shapes, products: await products };
+
+} //satisfies PageServerLoad;
