@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Color {
-  id        String    @id @db.Uuid
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
-  createdAt DateTime  @default(now()) @map("created_at")
-  text      String    @db.VarChar(50)
-  hex       String    @db.VarChar(9)
-  products  Product[]
+  id         String    @id @db.Uuid
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  text       String    @db.VarChar(50)
+  scanHex    String    @unique @map("hex") @db.VarChar(9)
+  displayHex String    @default("#00000000") @map("display_hex") @db.VarChar(9)
+  products   Product[]
 
   @@map("colors")
 }

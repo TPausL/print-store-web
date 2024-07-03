@@ -12,7 +12,6 @@
 
 	import {
 		faHashtag,
-		faMinus,
 		faPen,
 		faRulerHorizontal,
 		faSearch,
@@ -23,6 +22,7 @@
 		faSwatchbook
 	} from '@fortawesome/free-solid-svg-icons';
 	import Row from './Row.svelte';
+	import SortIndicator from '$lib/components/SortIndicator.svelte';
 	export let data: PageData;
 	$: products = data.products;
 
@@ -48,7 +48,6 @@
 		} else {
 			if (sort.dir === 'asc') {
 				sortBy = [...filter(sortBy, (s) => s.col !== col), { col, dir: 'desc' }];
-				// sortBy = [...new_SortBy];
 			} else {
 				sortBy = [...filter(sortBy, (s) => s.col !== col)];
 			}
@@ -67,11 +66,11 @@
 	$: sortSizeIcon = getSortIcon(SortCol.SIZE);
 </script>
 
-<div class="card shadow-2xl basis-3/4 bg-gradient-to-tr from-secondary to-accent p-5">
+<div class="card shadow-2xl basis-7/12 bg-gradient-to-tr from-secondary to-accent p-5">
 	<label
 		class="input input-bordered flex items-center gap-2 focus-within:outline-none focus:outline-none"
 	>
-		<FontAwesomeIcon icon={faSearch} />
+		<FontAwesomeIcon class="text-[#9ca3af]" size={'sm'} icon={faSearch} />
 		<input bind:value={search} type="text" class="grow" placeholder="Search" />
 	</label>
 	{search}
@@ -86,15 +85,7 @@
 								on:click={() => toggleSort(SortCol.SIZE)}
 								class="btn btn-circle btn-ghost ml-auto"
 							>
-								{#if find(sortBy, { col: SortCol.SIZE })}
-									{#if find(sortBy, { col: SortCol.SIZE })?.dir === 'asc'}
-										<FontAwesomeIcon icon={faSortUp} />
-									{:else}
-										<FontAwesomeIcon icon={faSortDown} />
-									{/if}
-								{:else}
-									<FontAwesomeIcon icon={faSort} />
-								{/if}
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.SIZE })?.dir} />
 							</button>
 						</div>
 					</th>
@@ -104,15 +95,7 @@
 								on:click={() => toggleSort(SortCol.COLOR)}
 								class="btn btn-circle btn-ghost ml-auto"
 							>
-								{#if find(sortBy, { col: SortCol.COLOR })}
-									{#if find(sortBy, { col: SortCol.COLOR })?.dir === 'asc'}
-										<FontAwesomeIcon icon={faSortUp} />
-									{:else}
-										<FontAwesomeIcon icon={faSortDown} />
-									{/if}
-								{:else}
-									<FontAwesomeIcon icon={faSort} />
-								{/if}
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.COLOR })?.dir} />
 							</button>
 						</div></th
 					>
@@ -123,34 +106,19 @@
 								on:click={() => toggleSort(SortCol.SHAPE)}
 								class="btn btn-circle btn-ghost ml-auto"
 							>
-								{#if find(sortBy, { col: SortCol.SHAPE })}
-									{#if find(sortBy, { col: SortCol.SHAPE })?.dir === 'asc'}
-										<FontAwesomeIcon icon={faSortUp} />
-									{:else}
-										<FontAwesomeIcon icon={faSortDown} />
-									{/if}
-								{:else}
-									<FontAwesomeIcon icon={faSort} />
-								{/if}
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHAPE })?.dir} />
 							</button>
 						</div></th
 					>
 
 					<th>
 						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl<button
+							<FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl
+							<button
 								on:click={() => toggleSort(SortCol.COUNT)}
 								class="btn btn-circle btn-ghost ml-auto"
 							>
-								{#if find(sortBy, { col: SortCol.COUNT })}
-									{#if find(sortBy, { col: SortCol.COUNT })?.dir === 'asc'}
-										<FontAwesomeIcon icon={faSortUp} />
-									{:else}
-										<FontAwesomeIcon icon={faSortDown} />
-									{/if}
-								{:else}
-									<FontAwesomeIcon icon={faSort} />
-								{/if}
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.COUNT })?.dir} />
 							</button>
 						</div></th
 					>
@@ -169,80 +137,4 @@
 			</tbody>
 		</table>
 	</div>
-
-	<!-- <Grid
-		
-		data={products}
-		fixedHeader
-		style={{
-			container: {
-				height: "100%"
-			}
-		}}
-		height="calc(100% - 59px)"
-		sort
-		search= {{
-			selector: (cell, rowIndex, cellIndex) => {
-				if (cellIndex === 1) {
-					return cell.text;
-				} else {
-					return cell;
-				}
-			}
-		  }},
-		language={{
-			search: {
-				placeholder: '🔎 Durchsuchen'
-			},
-			language: 'de'
-		}}
-		columns={[
-			{
-				name: html(
-					'<i class="fa-solid fa-ruler-horizontal fa-xl" style="padding-right: 8px"></i>  Größe'
-				),
-				data: (prod) => prod.size.text
-			},
-			{
-				name: html(
-					'<i class="fa-solid fa-swatchbook fa-xl" style="padding-right: 8px"></i>  Farbe'
-				),
-				data: (prod) => prod.color,
-				sort: {
-					compare: (a, b) => {
-						if (a.text < b.text) return -1;
-						if (a.text > b.text) return 1;
-						return 0;
-					}
-				},
-				formatter: (cell, row, col) => {
-					return html(
-						`<span style="color: ${row.cells[1].data}"><i class="fa-solid fa-circle fa-xl" style="color: ${cell.hex}"></i> ${cell.text}</span>`
-					);
-				}
-			},
-			{
-				name: html('<i class="fa-solid fa-shapes fa-xl" style="padding-right: 8px"></i>  Form'),
-				data: (prod) => prod.shape.text,
-				formatter: (cel) => capitalize(cel)
-			},
-			{
-				name: html('<i class="fa-solid fa-hashtag fa-xl" style="padding-right: 8px"></i>  Anzahl'),
-				data: (prod) => prod.count
-			}, {
-				name: "Bearbeiten",
-				data: (prod) => prod,
-				formatter: (cell) => {
-					return html(
-						`<button onClick={handleMinus} class="btn btn-primary">Minus</a>`
-					);
-				}
-			}
-		]}
-	/> -->
 </div>
-
-<style global>
-	@import 'https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.css';
-	@import './page.css';
-</style>

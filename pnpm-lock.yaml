@@ -26,6 +26,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.6
         version: 4.17.6
+      colord:
+        specifier: ^2.9.3
+        version: 2.9.3
       gridjs:
         specifier: ^6.2.0
         version: 6.2.0
@@ -81,6 +84,9 @@ importers:
       svelte:
         specifier: ^4.2.7
         version: 4.2.18
+      svelte-awesome-color-picker:
+        specifier: ^3.1.0
+        version: 3.1.0(svelte@4.2.18)
       svelte-check:
         specifier: ^3.6.0
         version: 3.8.4(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.18)
@@ -671,6 +677,9 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  colord@2.9.3:
+    resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
 
   commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -1435,6 +1444,16 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  svelte-awesome-color-picker@3.1.0:
+    resolution: {integrity: sha512-na9B9qLaV8XQ6W6eyP6vFyDV2TBF4qvGad6799D4GzbazkiFtoO+lbaFFViAWanz/eECwe/WUAUdg6Jy7LIKFw==}
+    peerDependencies:
+      svelte: ^3.55.1 || ^4.0.0
+
+  svelte-awesome-slider@1.1.0:
+    resolution: {integrity: sha512-MgY6ZdBON42HVZqNWNjq2HOgyDlC35q0TNbV/YO1l1/bcb5yhM8EE97h1AJ/7F6t6sLzXhQ3qPf5nGyCdDSnCg==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0
+
   svelte-check@3.8.4:
     resolution: {integrity: sha512-61aHMkdinWyH8BkkTX9jPLYxYzaAAz/FK/VQqdr2FiCQQ/q04WCwDlpGbHff1GdrMYTmW8chlTFvRWL9k0A8vg==}
     hasBin: true
@@ -2148,6 +2167,8 @@ snapshots:
       color-name: 1.1.4
 
   color-name@1.1.4: {}
+
+  colord@2.9.3: {}
 
   commander@4.1.1: {}
 
@@ -2888,6 +2909,16 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svelte-awesome-color-picker@3.1.0(svelte@4.2.18):
+    dependencies:
+      colord: 2.9.3
+      svelte: 4.2.18
+      svelte-awesome-slider: 1.1.0(svelte@4.2.18)
+
+  svelte-awesome-slider@1.1.0(svelte@4.2.18):
+    dependencies:
+      svelte: 4.2.18
 
   svelte-check@3.8.4(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.18):
     dependencies:

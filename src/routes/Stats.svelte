@@ -7,7 +7,7 @@
 	const { map, uniq, sumBy } = _;
 </script>
 
-<div class="card basis-1/4">
+<div class="card basis-5/12">
 	<div class="stats stats-vertical shadow bg-gradient-to-tr from-secondary to-accent">
 		<div class="stat">
 			<div class="stat-figure">
