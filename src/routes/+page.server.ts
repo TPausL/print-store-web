@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ fetch, depends }) => {
 
     });
     const colors = await prisma.color.findMany({ orderBy: { text: 'asc' } });
-    const sizes = await prisma.size.findMany();
+    const sizes = await prisma.size.findMany({ orderBy: { width: 'asc' } });
     const shapes = await prisma.shape.findMany();
 
     depends("app:db")

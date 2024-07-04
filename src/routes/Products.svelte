@@ -66,7 +66,7 @@
 	$: sortSizeIcon = getSortIcon(SortCol.SIZE);
 </script>
 
-<div class="card shadow-2xl basis-7/12 bg-gradient-to-tr from-secondary to-accent p-5">
+<div class="card shadow-2xl basis-8/12 bg-gradient-to-tr from-secondary to-accent p-5">
 	<label
 		class="input input-bordered flex items-center gap-2 focus-within:outline-none focus:outline-none"
 	>

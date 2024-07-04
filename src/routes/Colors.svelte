@@ -40,33 +40,25 @@
 	let saveTimeout: number;
 </script>
 
-<div
-	class="card shadow-2xl basis-7/12 bg-gradient-to-tr from-secondary to-accent p-5 overflow-scroll"
->
-	<table>
-		{#each colors as color}
-			<tr>
-				<td class="flex items-center">
-					{#key color}
-						<ColorPicker
-							on:input={(e) => {
-								clearTimeout(saveTimeout);
-								saveTimeout = setTimeout(() => {
-									handleColorHexChange(color, e.detail.hex);
-								}, 1000);
-							}}
-							hex={color.displayHex}
-							label={''}
-						/>
-						<!-- <FontAwesomeIcon icon={faCircle} style="color: {color.hex}" /> -->
-						<EditSpan
-							class={'flex items-center h-fit mh-1'}
-							text={color.text}
-							save={(newText) => handleColorNameChange(color, newText)}
-						/>
-					{/key}
-				</td>
-			</tr>
-		{/each}
-	</table>
-</div>
+<table>
+	{#each colors as color}
+		<tr>
+			<td class="flex items-center">
+				{#key color}
+					<ColorPicker
+						on:input={(e) => {
+							clearTimeout(saveTimeout);
+							saveTimeout = setTimeout(() => {
+								handleColorHexChange(color, e.detail.hex);
+							}, 1000);
+						}}
+						hex={color.displayHex}
+						label={''}
+					/>
+					<!-- <FontAwesomeIcon icon={faCircle} style="color: {color.hex}" /> -->
+					<EditSpan text={color.text} onSave={(newText) => handleColorNameChange(color, newText)} />
+				{/key}
+			</td>
+		</tr>
+	{/each}
+</table>
