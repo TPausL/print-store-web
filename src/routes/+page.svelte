@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Colors from './Colors.svelte';
 	import Products from './Products.svelte';
+	import Shapes from './Shapes.svelte';
 	import Sizes from './Sizes.svelte';
 	import Stats from './Stats.svelte';
 	export let data;
@@ -19,6 +20,7 @@
 					role="tab"
 					class="tab !rounded-lg"
 					aria-label="Farben"
+					checked
 				/>
 				<div role="tabpanel" class="tab-content overflow-scroll border-0 h-[calc(100%-0.5rem)] m-1">
 					<Colors colors={data.colors} />
@@ -30,10 +32,22 @@
 					role="tab"
 					class="tab !rounded-lg"
 					aria-label="Größen"
-					checked
+					
 				/>
 				<div role="tabpanel" class="tab-content">
 					<Sizes sizes={data.sizes} />
+				</div>
+
+				<input
+					type="radio"
+					name="category_tabs"
+					role="tab"
+					class="tab !rounded-lg"
+					aria-label="Formen"
+					
+				/>
+				<div role="tabpanel" class="tab-content">
+					<Shapes shapes={data.shapes} />
 				</div>
 			</div>
 		</div>
