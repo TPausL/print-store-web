@@ -12,6 +12,7 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
+RUN npx prisma generate
 # Build the SvelteKit application
 RUN npm run build
 
