@@ -32,7 +32,6 @@
 					role="tab"
 					class="tab !rounded-lg"
 					aria-label="Größen"
-					
 				/>
 				<div role="tabpanel" class="tab-content">
 					<Sizes sizes={data.sizes} />
@@ -44,7 +43,6 @@
 					role="tab"
 					class="tab !rounded-lg"
 					aria-label="Formen"
-					
 				/>
 				<div role="tabpanel" class="tab-content">
 					<Shapes shapes={data.shapes} />

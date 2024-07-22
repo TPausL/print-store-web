@@ -1,38 +1,36 @@
-# create-svelte
+# PrintStore
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Scan 3D-printed products in order to keep track of the stock in a digital twin of the storage shelf.
 
-## Creating a project
+## This repo
 
-If you're seeing this, you've probably already done this step. Congrats!
+This repository contains the code for showing the digital twin off the storage and do some basic manipulation like removing products or editing colors.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Notes for setup
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+1. Run the following command to install the dependencies:
 
-## Developing
+   ```shell
+   npm install
+   ```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+2. Copy .env.example to .env and fill in DSN (SHADOW_DSN is just needed in some migration cases not for normal operation)
 
-```bash
-npm run dev
+3. Run
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+   ```shell
+   npx prisma migrate
+   ```
 
-## Building
+   to setup the database
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+4. either run
+   ```shell
+   npm run dev
+   ```
+   for development server or
+   ```shell
+   npm run build
+   node build
+   ```
+   to start a production server

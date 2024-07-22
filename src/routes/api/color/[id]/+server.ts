@@ -13,3 +13,14 @@ export async function PATCH(req) {
 
     return json({ data: dbRes }, {});
 }
+
+export async function DELETE(req) {
+    let id = req.params.id;
+    let dbRes = await prisma.color.delete({
+        where: {
+            id
+        }
+    });
+    return new Response(null, { status: 204 });
+}
+

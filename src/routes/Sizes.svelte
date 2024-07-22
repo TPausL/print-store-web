@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
+	import { faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Size } from '@prisma/client';
 	export let sizes;
 
@@ -29,6 +31,7 @@
 			<th>Text</th>
 			<th>Breite</th>
 			<th>Höhe</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -58,6 +61,18 @@
 							text={size.height}
 						/>
 					</div>
+				</td>
+				<td>
+					<button
+						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+						on:click={() => {
+							fetch('/api/size/' + size.id, {
+								method: 'DELETE'
+							});
+							invalidate('app:db');
+						}}
+						><FontAwesomeIcon icon={faTrash} />
+					</button>
 				</td>
 			</tr>
 		{/each}

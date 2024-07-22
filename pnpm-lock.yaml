@@ -35,6 +35,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      svelte-portal:
+        specifier: ^2.2.1
+        version: 2.2.1
       vite:
         specifier: ^5.0.3
         version: 5.3.2
@@ -1523,6 +1526,9 @@ packages:
     engines: {node: ^12.20 || ^14.13.1 || >= 16}
     peerDependencies:
       svelte: ^3.19.0 || ^4.0.0
+
+  svelte-portal@2.2.1:
+    resolution: {integrity: sha512-uF7is5sM4aq5iN7QF/67XLnTUvQCf2iiG/B1BHTqLwYVY1dsVmTeXZ/LeEyU6dLjApOQdbEG9lkqHzxiQtOLEQ==}
 
   svelte-preprocess@5.1.4:
     resolution: {integrity: sha512-IvnbQ6D6Ao3Gg6ftiM5tdbR6aAETwjhHV+UKGf5bHGYR69RQvF1ho0JKPcbUON4vy4R7zom13jPjgdOWCQ5hDA==}
@@ -3053,6 +3059,8 @@ snapshots:
   svelte-hmr@0.16.0(svelte@4.2.18):
     dependencies:
       svelte: 4.2.18
+
+  svelte-portal@2.2.1: {}
 
   svelte-preprocess@5.1.4(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.18)(typescript@5.5.2):
     dependencies:
