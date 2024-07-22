@@ -4,6 +4,7 @@
 	import { faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Size } from '@prisma/client';
+	import toast from 'svelte-french-toast';
 	export let sizes;
 
 	const handleChange = async (
@@ -68,8 +69,16 @@
 						on:click={() => {
 							fetch('/api/size/' + size.id, {
 								method: 'DELETE'
+							}).then(async (res) => {
+								if (res.status > 400) {
+									console.error('Failed to delete color.');
+									toast.error((await res.json()).message, {
+										style: 'background-color: #dc2626; color: white;'
+									});
+								} else {
+									invalidate('app:db');
+								}
 							});
-							invalidate('app:db');
 						}}
 						><FontAwesomeIcon icon={faTrash} />
 					</button>

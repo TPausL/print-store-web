@@ -45,6 +45,7 @@
 		"@types/lodash": "^4.17.6",
 		"colord": "^2.9.3",
 		"lodash": "^4.17.21",
+		"svelte-french-toast": "^1.2.0",
 		"svelte-portal": "^2.2.1",
 		"vite": "^5.0.3"
 	},

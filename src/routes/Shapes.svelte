@@ -4,6 +4,7 @@
 	import { faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Shape } from '@prisma/client';
+	import toast from 'svelte-french-toast';
 	export let shapes;
 
 	const handleChange = async (
@@ -42,8 +43,15 @@
 							on:click={() => {
 								fetch('/api/shape/' + shape.id, {
 									method: 'DELETE'
+								}).then(async (res) => {
+									if (res.status > 400) {
+										toast.error((await res.json()).message, {
+											style: 'background-color: #dc2626; color: white;'
+										});
+									} else {
+										invalidate('app:db');
+									}
 								});
-								invalidate('app:db');
 							}}
 							><FontAwesomeIcon icon={faTrash} />
 						</button>

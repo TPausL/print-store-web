@@ -8,6 +8,8 @@
 
 	import type { Color } from '@prisma/client';
 	import ColorPickerWrapper from './ColorPickerWrapper.svelte';
+	import toast from 'svelte-french-toast';
+	import { error, json } from '@sveltejs/kit';
 	export let colors;
 
 	async function handleColorNameChange(color: Color, newText: string) {
@@ -64,8 +66,16 @@
 						on:click={() => {
 							fetch('/api/color/' + color.id, {
 								method: 'DELETE'
+							}).then(async (res) => {
+								if (res.status > 400) {
+									console.error('Failed to delete color.');
+									toast.error((await res.json()).message, {
+										style: 'background-color: #dc2626; color: white;'
+									});
+								} else {
+									invalidate('app:db');
+								}
 							});
-							invalidate('app:db');
 						}}
 						><FontAwesomeIcon icon={faTrash} />
 					</button>
