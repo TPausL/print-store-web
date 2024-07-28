@@ -73,7 +73,6 @@
 		<FontAwesomeIcon class="text-[#9ca3af]" size={'sm'} icon={faSearch} />
 		<input bind:value={search} type="text" class="grow" placeholder="Search" />
 	</label>
-	{search}
 	<div class="h-full overflow-scroll">
 		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent">
 			<thead>
@@ -81,10 +80,7 @@
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
-							<button
-								on:click={() => toggleSort(SortCol.SIZE)}
-								class="btn btn-circle btn-ghost ml-auto"
-							>
+							<button on:click={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SIZE })?.dir} />
 							</button>
 						</div>
@@ -93,7 +89,7 @@
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
 								on:click={() => toggleSort(SortCol.COLOR)}
-								class="btn btn-circle btn-ghost ml-auto"
+								class="btn btn-circle btn-ghost"
 							>
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.COLOR })?.dir} />
 							</button>
@@ -104,7 +100,7 @@
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
 								on:click={() => toggleSort(SortCol.SHAPE)}
-								class="btn btn-circle btn-ghost ml-auto"
+								class="btn btn-circle btn-ghost"
 							>
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHAPE })?.dir} />
 							</button>
@@ -114,10 +110,7 @@
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl
-							<button
-								on:click={() => toggleSort(SortCol.COUNT)}
-								class="btn btn-circle btn-ghost ml-auto"
-							>
+							<button on:click={() => toggleSort(SortCol.COUNT)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.COUNT })?.dir} />
 							</button>
 						</div></th

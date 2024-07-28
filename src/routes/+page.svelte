@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Toaster } from 'svelte-french-toast';
+	import toast, { Toaster } from 'svelte-french-toast';
 	import { browser } from '$app/environment';
 	import { invalidate } from '$app/navigation';
 	import Colors from './Colors.svelte';
@@ -14,6 +14,10 @@
 			'new_product',
 			function (event) {
 				invalidate('app:db');
+				toast.success('New Product added', {
+					style: 'background-color: #00b0b8; color: white',
+					duration: 5000
+				});
 			},
 			false
 		);
@@ -21,6 +25,10 @@
 			'new_color',
 			function (event) {
 				invalidate('app:db');
+				toast.success('New color added', {
+					style: 'background-color: #00b0b8; color: white',
+					duration: 5000
+				});
 			},
 			false
 		);
