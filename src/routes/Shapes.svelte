@@ -21,43 +21,35 @@
 				[prop]: value
 			})
 		});
-		console.log('res', await res.json());
 		if (prop == 'text') invalidate('app:db');
 	};
 </script>
 
 <table>
-	<thead>
+	{#each shapes as shape}
 		<tr>
-			<th>Text</th>
+			<td
+				><div class="flex items-center">
+					<EditSpan onSave={(val) => handleChange('text', shape, val)} text={shape.text} />
+					<button
+						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+						on:click={() => {
+							fetch('/api/shape/' + shape.id, {
+								method: 'DELETE'
+							}).then(async (res) => {
+								if (res.status > 400) {
+									toast.error((await res.json()).message, {
+										style: 'background-color: #dc2626; color: white;'
+									});
+								} else {
+									invalidate('app:db');
+								}
+							});
+						}}
+						><FontAwesomeIcon icon={faTrash} />
+					</button>
+				</div>
+			</td>
 		</tr>
-	</thead>
-	<tbody>
-		{#each shapes as shape}
-			<tr>
-				<td
-					><div class="flex items-center">
-						<EditSpan onSave={(val) => handleChange('text', shape, val)} text={shape.text} />
-						<button
-							class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
-							on:click={() => {
-								fetch('/api/shape/' + shape.id, {
-									method: 'DELETE'
-								}).then(async (res) => {
-									if (res.status > 400) {
-										toast.error((await res.json()).message, {
-											style: 'background-color: #dc2626; color: white;'
-										});
-									} else {
-										invalidate('app:db');
-									}
-								});
-							}}
-							><FontAwesomeIcon icon={faTrash} />
-						</button>
-					</div>
-				</td>
-			</tr>
-		{/each}
-	</tbody>
+	{/each}
 </table>

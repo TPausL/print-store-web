@@ -7,7 +7,10 @@
 	import Shapes from './Shapes.svelte';
 	import Sizes from './Sizes.svelte';
 	import Stats from './Stats.svelte';
+	import { onMount } from 'svelte';
+
 	export let data;
+
 	if (browser) {
 		let source = new EventSource('http://localhost:5000/stream');
 		source.addEventListener(
@@ -70,7 +73,7 @@
 					class="tab !rounded-lg"
 					aria-label="Größen"
 				/>
-				<div role="tabpanel" class="tab-content">
+				<div role="tabpanel" class="tab-content overflow-scroll border-0 h-[calc(100%-0.5rem)] m-1">
 					<Sizes sizes={data.sizes} />
 				</div>
 
@@ -81,11 +84,11 @@
 					class="tab !rounded-lg"
 					aria-label="Formen"
 				/>
-				<div role="tabpanel" class="tab-content">
+				<div role="tabpanel" class="tab-content overflow-scroll border-0 h-[calc(100%-0.5rem)] m-1">
 					<Shapes shapes={data.shapes} />
 				</div>
 			</div>
 		</div>
 	</div>
-	<Products {data} />
+	<Products {...data} />
 </div>

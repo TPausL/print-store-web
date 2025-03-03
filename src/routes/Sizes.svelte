@@ -21,7 +21,6 @@
 				[prop]: value
 			})
 		});
-		console.log('res', await res.json());
 		if (prop == 'text') invalidate('app:db');
 	};
 </script>

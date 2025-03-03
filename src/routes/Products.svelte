@@ -4,13 +4,18 @@
 	import _ from 'lodash';
 	const { map, uniq, sumBy, capitalize, filter, find, remove, orderBy } = _;
 	enum SortCol {
-		SIZE = 'size.width',
-		COLOR = 'color.text',
-		SHAPE = 'shape.text',
-		COUNT = 'count'
+		SIZE = 'product.size.width',
+		COLOR = 'product.color.text',
+		SHAPE = 'product.shape.text',
+		SHOULD = 'should',
+		IS = 'is',
+		SOLD = 'sold'
 	}
 
 	import {
+		faBoxesStacked,
+		faBullseye,
+		faDollarSign,
 		faHashtag,
 		faPen,
 		faRulerHorizontal,
@@ -23,24 +28,32 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import Row from './Row.svelte';
 	import SortIndicator from '$lib/components/SortIndicator.svelte';
-	export let data: PageData;
-	$: products = data.products;
+	let { products, storages = [] }: PageData = $props();
+	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = $state([]);
+	let search = $state('');
 
-	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = [];
-
-	$: filteredProds = orderBy(
-		filter(products, (prod) => {
-			return (
-				prod.size.text.toLowerCase().includes(search.toLowerCase()) ||
-				prod.color.text.toLowerCase().includes(search.toLowerCase()) ||
-				prod.shape.text.toLowerCase().includes(search.toLowerCase()) ||
-				prod.count.toString().includes(search)
-			);
-		}),
-		sortBy.map((s) => s.col),
-		sortBy.map((s) => s.dir)
+	let selectedStorage = $state(storages[0] ?? { name: 'Loading...' });
+	$effect(() =>
+		console.log(
+			sortBy.map((s) => s.col),
+			sortBy.map((s) => s.dir)
+		)
 	);
-	let search = '';
+	let filteredProds = $derived(
+		orderBy(
+			filter(products, (storageProd) => {
+				return (
+					(storageProd.product.size.text.toLowerCase().includes(search.toLowerCase()) ||
+						storageProd.product.color.text.toLowerCase().includes(search.toLowerCase()) ||
+						storageProd.product.shape.text.toLowerCase().includes(search.toLowerCase())) &&
+					storageProd.storageId === selectedStorage.id
+				);
+			}),
+			sortBy.map((s) => s.col),
+			sortBy.map((s) => s.dir)
+		)
+	);
+	$effect(() => console.log(map(filteredProds, (p) => p.product.id)));
 	function toggleSort(col: SortCol) {
 		let sort = find(sortBy, { col: col });
 		if (!sort) {
@@ -63,16 +76,39 @@
 			return pref;
 		}
 	}
-	$: sortSizeIcon = getSortIcon(SortCol.SIZE);
 </script>
 
 <div class="card shadow-2xl basis-8/12 bg-gradient-to-tr from-secondary to-accent p-5">
-	<label
-		class="input input-bordered flex items-center gap-2 focus-within:outline-none focus:outline-none"
-	>
-		<FontAwesomeIcon class="text-[#9ca3af]" size={'sm'} icon={faSearch} />
-		<input bind:value={search} type="text" class="grow" placeholder="Search" />
-	</label>
+	<div class="flex w-full justify-center items-center">
+		<label
+			class="input input-bordered flex flex-[9] items-center gap-2 focus-within:outline-none focus:outline-none"
+		>
+			<FontAwesomeIcon class="text-[#9ca3af]" size={'sm'} icon={faSearch} />
+			<input bind:value={search} type="text" class="grow" placeholder="Search" />
+		</label>
+
+		<div class="dropdown dropdown-start flex-[3]">
+			<div tabindex="0" role="button" class="btn m-1 w-full bg-base-100">
+				{selectedStorage.name}
+			</div>
+			<ul
+				tabindex="0"
+				class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
+			>
+				{#each storages as storage}
+					<li>
+						<a
+							onclick={() => {
+								//@ts-ignore
+								document.activeElement.blur();
+								selectedStorage = find(storages, { id: storage.id });
+							}}>{storage.name}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	</div>
 	<div class="h-full overflow-scroll">
 		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent">
 			<thead>
@@ -80,7 +116,7 @@
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
-							<button on:click={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
+							<button onclick={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SIZE })?.dir} />
 							</button>
 						</div>
@@ -88,7 +124,7 @@
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
-								on:click={() => toggleSort(SortCol.COLOR)}
+								onclick={() => toggleSort(SortCol.COLOR)}
 								class="btn btn-circle btn-ghost"
 							>
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.COLOR })?.dir} />
@@ -99,33 +135,51 @@
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
-								on:click={() => toggleSort(SortCol.SHAPE)}
+								onclick={() => toggleSort(SortCol.SHAPE)}
 								class="btn btn-circle btn-ghost"
 							>
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHAPE })?.dir} />
 							</button>
-						</div></th
-					>
+						</div>
+					</th>
 
 					<th>
 						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faHashtag} />Anzahl
-							<button on:click={() => toggleSort(SortCol.COUNT)} class="btn btn-circle btn-ghost">
-								<SortIndicator sortDir={find(sortBy, { col: SortCol.COUNT })?.dir} />
+							<FontAwesomeIcon class="mr-1" icon={faBullseye} />Soll
+							<button onclick={() => toggleSort(SortCol.SHOULD)} class="btn btn-circle btn-ghost">
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHOULD })?.dir} />
 							</button>
-						</div></th
-					>
+						</div>
+					</th>
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faBoxesStacked} />Ist
+							<button onclick={() => toggleSort(SortCol.IS)} class="btn btn-circle btn-ghost">
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.IS })?.dir} />
+							</button>
+						</div>
+					</th>
+					<th>
+						<div class="flex items-center gap-2">
+							<FontAwesomeIcon class="mr-1" icon={faDollarSign} />Verkauft
+							<button onclick={() => toggleSort(SortCol.SOLD)} class="btn btn-circle btn-ghost">
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.SOLD })?.dir} />
+							</button>
+						</div>
+					</th>
 
 					<th>
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten
-						</div></th
-					>
+						</div>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
-				{#each filteredProds as prod}
-					<Row {prod} />
+				{#each filteredProds as storageProd (storageProd.id)}
+					{#if storageProd.product}
+						<Row {storageProd} />
+					{/if}
 				{/each}
 			</tbody>
 		</table>

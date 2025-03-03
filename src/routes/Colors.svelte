@@ -10,7 +10,8 @@
 	import ColorPickerWrapper from './ColorPickerWrapper.svelte';
 	import toast from 'svelte-french-toast';
 	import { error, json } from '@sveltejs/kit';
-	export let colors;
+
+	const { colors } = $props();
 
 	async function handleColorNameChange(color: Color, newText: string) {
 		const res = await fetch('/api/color/' + color.id, {
@@ -22,7 +23,6 @@
 				text: newText
 			})
 		});
-		console.log('res', await res.json());
 		invalidate('app:db');
 	}
 
@@ -36,52 +36,61 @@
 				displayHex: newHex
 			})
 		});
-		console.log('res', await res.json());
-		invalidate('app:db');
+		if ((await res.json()).data.displayHex != color.displayHex) {
+			console.log('invalidated');
+			invalidate('app:db');
+		}
 	}
 
 	let saveTimeout: number;
 </script>
 
 <table>
-	{#each colors as color}
-		<tr>
-			<td class="flex items-center">
-				{#key color}
-					<ColorPicker
-						on:input={(e) => {
-							clearTimeout(saveTimeout);
-							saveTimeout = setTimeout(() => {
-								handleColorHexChange(color, e.detail.hex);
-							}, 1000);
-						}}
-						components={{ wrapper: ColorPickerWrapper }}
-						hex={color.displayHex}
-						label={''}
-					/>
-					<!-- <FontAwesomeIcon icon={faCircle} style="color: {color.hex}" /> -->
-					<EditSpan text={color.text} onSave={(newText) => handleColorNameChange(color, newText)} />
-					<button
-						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
-						on:click={() => {
-							fetch('/api/color/' + color.id, {
-								method: 'DELETE'
-							}).then(async (res) => {
-								if (res.status > 400) {
-									console.error('Failed to delete color.');
-									toast.error((await res.json()).message, {
-										style: 'background-color: #dc2626; color: white;'
-									});
-								} else {
-									invalidate('app:db');
-								}
-							});
-						}}
-						><FontAwesomeIcon icon={faTrash} />
-					</button>
-				{/key}
-			</td>
-		</tr>
-	{/each}
+	<tbody>
+		{#each colors as color}
+			<tr>
+				<td class="flex items-center">
+					{#key color}
+						<ColorPicker
+							on:input={(e) => {
+								clearTimeout(saveTimeout);
+								saveTimeout = setTimeout(() => {
+									console.log('change');
+
+									handleColorHexChange(color, e.detail.hex);
+								}, 1000);
+							}}
+							components={{ wrapper: ColorPickerWrapper }}
+							hex={color.displayHex}
+							label={''}
+						/>
+						<!-- <FontAwesomeIcon icon={faCircle} style="color: {color.hex}" /> -->
+						<EditSpan
+							text={color.text}
+							onSave={(newText) => handleColorNameChange(color, newText)}
+						/>
+						<button
+							class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+							on:click={() => {
+								fetch('/api/color/' + color.id, {
+									method: 'DELETE'
+								}).then(async (res) => {
+									if (res.status >= 400) {
+										console.error('Failed to delete color.');
+										toast.error((await res.json()).message, {
+											style: 'background-color: #dc2626; color: white;'
+										});
+									} else {
+										invalidate('app:db');
+									}
+								});
+							}}
+							><FontAwesomeIcon icon={faTrash} />
+						</button>
+					{/key}
+				</td>
+			</tr>
+		{/each}
+	</tbody>
 </table>
 <div id="portal" />

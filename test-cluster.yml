@@ -1,0 +1,26 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: timo-print-store
+  labels:
+    name: timo-print-store
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: timo-print-store
+  name: db
+spec:
+  instances: 1
+  storage:
+    size: 2Gi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: timo-print-store
+  name: db-shadow
+spec:
+  instances: 1
+  storage:
+    size: 2Gi
