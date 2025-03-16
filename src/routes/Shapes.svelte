@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
+	import { deleteShape, updateShape } from '$lib/generated/client';
 	import { faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Shape } from '@prisma/client';
@@ -12,16 +13,17 @@
 		shape: Shape,
 		value: string | number
 	) => {
-		const res = await fetch('/api/shape/' + shape.id, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				[prop]: value
-			})
-		});
-		if (prop == 'text') invalidate('app:db');
+		const res = await updateShape({ path: { id: shape.id }, body: { [prop]: value } });
+		if (res.status >= 400) {
+			toast.error(res.response.data.message ?? res.response.data.message[0] ?? res.message, {
+				style: 'background-color: #dc2626; color: white;'
+			});
+		} else {
+			toast.success('Größe aktualisiert', {
+				style: 'background-color: #16a085; color: white;'
+			});
+			if (prop == 'text') invalidate('app:db');
+		}
 	};
 </script>
 
@@ -34,14 +36,15 @@
 					<button
 						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
 						on:click={() => {
-							fetch('/api/shape/' + shape.id, {
-								method: 'DELETE'
-							}).then(async (res) => {
+							deleteShape({ path: { id: shape.id } }).then(async (res) => {
 								if (res.status > 400) {
-									toast.error((await res.json()).message, {
+									toast.error(res.response.data.message, {
 										style: 'background-color: #dc2626; color: white;'
 									});
 								} else {
+									toast.success('Form gelöscht', {
+										style: 'background-color: #16a085; color: white;'
+									});
 									invalidate('app:db');
 								}
 							});

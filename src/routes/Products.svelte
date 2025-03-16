@@ -28,11 +28,16 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import Row from './Row.svelte';
 	import SortIndicator from '$lib/components/SortIndicator.svelte';
-	let { products, storages = [] }: PageData = $props();
+	import type { ReturnStorageData } from '$lib/generated/client';
+	let {
+		products,
+		storages = [],
+		selectedStorage = $bindable()
+	}: PageData & { selectedStorage: ReturnStorageData } = $props();
 	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = $state([]);
 	let search = $state('');
 
-	let selectedStorage = $state(storages[0] ?? { name: 'Loading...' });
+	//let selectedStorage = $state(storages[0] ?? { name: 'Loading...' });
 	$effect(() =>
 		console.log(
 			sortBy.map((s) => s.col),
@@ -176,7 +181,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each filteredProds as storageProd (storageProd.id)}
+				{#each filteredProds as storageProd (storageProd)}
 					{#if storageProd.product}
 						<Row {storageProd} />
 					{/if}

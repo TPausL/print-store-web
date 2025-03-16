@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
+	import { deleteSize, updateSize } from '$lib/generated/client';
 	import { faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Size } from '@prisma/client';
@@ -12,16 +13,17 @@
 		size: Size,
 		value: string | number
 	) => {
-		const res = await fetch('/api/size/' + size.id, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				[prop]: value
-			})
-		});
-		if (prop == 'text') invalidate('app:db');
+		const res = await updateSize({ path: { id: size.id }, body: { [prop]: value } });
+		if (res.status >= 400) {
+			toast.error(res.response.data.message ?? res.response.data.message[0] ?? res.message, {
+				style: 'background-color: #dc2626; color: white;'
+			});
+		} else {
+			toast.success('Größe aktualisiert', {
+				style: 'background-color: #16a085; color: white;'
+			});
+			if (prop == 'text') invalidate('app:db');
+		}
 	};
 </script>
 
@@ -65,19 +67,23 @@
 				<td>
 					<button
 						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
-						on:click={() => {
-							fetch('/api/size/' + size.id, {
-								method: 'DELETE'
-							}).then(async (res) => {
-								if (res.status > 400) {
-									console.error('Failed to delete color.');
-									toast.error((await res.json()).message, {
+						onclick={async () => {
+							const res = await deleteSize({ path: { id: size.id } });
+							console.log(res.status);
+							if (res.status >= 400) {
+								toast.error(
+									res.response.data.message ?? res.response.data.message[0] ?? res.message,
+									{
 										style: 'background-color: #dc2626; color: white;'
-									});
-								} else {
-									invalidate('app:db');
-								}
-							});
+									}
+								);
+								if (prop == 'text') invalidate('app:db');
+							} else {
+								invalidate('app:db');
+								toast.success('Größe gelöscht', {
+									style: 'background-color: #16a085; color: white;'
+								});
+							}
 						}}
 						><FontAwesomeIcon icon={faTrash} />
 					</button>

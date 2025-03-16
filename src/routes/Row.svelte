@@ -1,34 +1,32 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import { faMinus } from '@fortawesome/free-solid-svg-icons';
+	import { faCashRegister, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { PageData } from './$types';
 	import toast from 'svelte-french-toast';
-	type Prod = PageData['products'][0]['product'];
+	import { incrementStorageProductsAmounts } from '$lib/generated/client';
 
 	let { storageProd }: { storageProd: PageData['products'][0] } = $props();
 	const prod = storageProd?.product;
 	$effect(() => console.log(storageProd.id));
-	async function handleTrash(prod: Prod) {
+	async function handleChange({ is = 0, sold = 0 }: { is?: number; sold?: number }) {
 		try {
-			const res = await fetch('/api/storageProduct/' + storageProd.id + '/increment', {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					is: -1
-				})
+			const res = incrementStorageProductsAmounts({
+				path: { id: storageProd.id },
+				body: { is, sold }
 			});
+
 			console.log(res);
 			if (res.status >= 400) {
-				console.log("Couldn't delete product", res);
-				toast.error((await res.json()).message, {
+				const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
+				console.log("Couldn't delete product", msg);
+				toast.error(msg, {
 					style: 'background-color: #dc2626; color: white;'
 				});
 				return;
+			} else {
+				invalidate('app:db');
 			}
-			invalidate('app:db');
 		} catch (e) {
 			console.log("Couldn't delete product", e);
 		}
@@ -42,17 +40,24 @@
 		<span>{prod.color.text}</span>
 	</td>
 	<td>{prod.shape.text} </td>
-	<td><span class="badge badge-primary badge-secondary">{storageProd.should}</span></td>
+	<td><span class="badge badge-lg badge-secondary ml-1">{storageProd.should}</span></td>
 	<td
-		><span
-			class={`badge ${storageProd.is < storageProd.should ? 'badge-error' : 'badge-primary'} badge-secondary`}
-			>{storageProd.is}</span
-		></td
+		><h1
+			class={`badge ml-1 badge-lg ${storageProd.is < storageProd.should ? 'badge-error' : 'badge-secondary'}`}
+		>
+			{storageProd.is}
+		</h1></td
 	>
-	<td><span class="badge badge-success badge-secondary">{storageProd.sold}</span></td>
-	<td>
-		<button on:click={() => handleTrash(prod)} class="btn btn-sm btn-primary btn-circle">
-			<FontAwesomeIcon icon={faMinus} />
+	<td><span class="badge ml-1 badge-lg badge-success">{storageProd.sold}</span></td>
+	<td class="text-nowrap">
+		<button onclick={() => handleChange({ is: -1 })} class="btn btn-md btn-error btn-circle mr-1">
+			<FontAwesomeIcon icon={faTrash} />
+		</button>
+		<button onclick={() => handleChange({ sold: 1 })} class="btn btn-md btn-error btn-circle mr-1">
+			<FontAwesomeIcon icon={faCashRegister} />
+		</button>
+		<button onclick={() => handleChange({ is: 1 })} class="btn btn-md btn-success btn-circle mr-1">
+			<FontAwesomeIcon icon={faPlus} />
 		</button>
 	</td>
 </tr>

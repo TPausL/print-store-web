@@ -6,43 +6,26 @@
 	import ColorPicker from 'svelte-awesome-color-picker';
 	import { colord } from 'colord';
 
-	import type { Color } from '@prisma/client';
 	import ColorPickerWrapper from './ColorPickerWrapper.svelte';
 	import toast from 'svelte-french-toast';
 	import { error, json } from '@sveltejs/kit';
+	import { deleteColor, updateColor, type Color } from '$lib/generated/client';
 
 	const { colors } = $props();
 
 	async function handleColorNameChange(color: Color, newText: string) {
-		const res = await fetch('/api/color/' + color.id, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				text: newText
-			})
-		});
+		await updateColor({ path: { id: color.id }, body: { text: newText } });
 		invalidate('app:db');
 	}
 
 	async function handleColorHexChange(color: Color, newHex: string) {
-		const res = await fetch('/api/color/' + color.id, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				displayHex: newHex
-			})
-		});
-		if ((await res.json()).data.displayHex != color.displayHex) {
-			console.log('invalidated');
+		const res = await updateColor({ path: { id: color.id }, body: { displayHex: newHex } });
+		if (res.data?.data?.displayHex != color.displayHex) {
 			invalidate('app:db');
 		}
 	}
 
-	let saveTimeout: number;
+	let saveTimeout: unknown;
 </script>
 
 <table>
@@ -57,7 +40,7 @@
 								saveTimeout = setTimeout(() => {
 									console.log('change');
 
-									handleColorHexChange(color, e.detail.hex);
+									handleColorHexChange(color, e.detail.hex as string);
 								}, 1000);
 							}}
 							components={{ wrapper: ColorPickerWrapper }}
@@ -71,13 +54,11 @@
 						/>
 						<button
 							class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
-							on:click={() => {
-								fetch('/api/color/' + color.id, {
-									method: 'DELETE'
-								}).then(async (res) => {
+							onclick={() => {
+								deleteColor({ path: { id: color.id } }).then(async (res) => {
 									if (res.status >= 400) {
 										console.error('Failed to delete color.');
-										toast.error((await res.json()).message, {
+										toast.error(res.response.data.message, {
 											style: 'background-color: #dc2626; color: white;'
 										});
 									} else {

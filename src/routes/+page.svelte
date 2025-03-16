@@ -8,8 +8,12 @@
 	import Sizes from './Sizes.svelte';
 	import Stats from './Stats.svelte';
 	import { onMount } from 'svelte';
-
-	export let data;
+	import { faPlus, faSync } from '@fortawesome/free-solid-svg-icons';
+	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import AddModal from './AddModal.svelte';
+	import _ from 'lodash';
+	const { map } = _;
+	const { data } = $props();
 
 	if (browser) {
 		let source = new EventSource('http://localhost:5000/stream');
@@ -43,6 +47,8 @@
 			false
 		);
 	}
+
+	let selectedStorage = $state(data.storages ? data.storages[0] : { name: 'Loading...' });
 </script>
 
 <Toaster position={'top-right'} />
@@ -90,5 +96,13 @@
 			</div>
 		</div>
 	</div>
-	<Products {...data} />
+
+	<Products {selectedStorage} {...data} />
+	<AddModal
+		colors={data.colors}
+		shapes={data.shapes}
+		sizes={data.sizes}
+		storages={data.storages}
+		{selectedStorage}
+	/>
 </div>
