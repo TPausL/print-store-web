@@ -14,6 +14,7 @@
 	import _ from 'lodash';
 	const { map } = _;
 	const { data } = $props();
+	const { storages, colors, products, shapes, sizes } = $derived(data);
 
 	if (browser) {
 		let source = new EventSource('http://localhost:5000/stream');
@@ -97,12 +98,6 @@
 		</div>
 	</div>
 
-	<Products {selectedStorage} {...data} />
-	<AddModal
-		colors={data.colors}
-		shapes={data.shapes}
-		sizes={data.sizes}
-		storages={data.storages}
-		{selectedStorage}
-	/>
+	<Products {selectedStorage} {storages} {colors} {products} {shapes} {sizes} />
+	<AddModal {colors} {shapes} {sizes} {storages} {selectedStorage} />
 </div>

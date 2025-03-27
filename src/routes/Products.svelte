@@ -58,7 +58,7 @@
 			sortBy.map((s) => s.dir)
 		)
 	);
-	$effect(() => console.log(map(filteredProds, (p) => p.product.id)));
+	$effect(() => console.log(filteredProds));
 	function toggleSort(col: SortCol) {
 		let sort = find(sortBy, { col: col });
 		if (!sort) {
@@ -93,11 +93,11 @@
 		</label>
 
 		<div class="dropdown dropdown-start flex-[3]">
-			<div tabindex="0" role="button" class="btn m-1 w-full bg-base-100">
+			<div tabindex="-1" role="button" class="btn m-1 w-full bg-base-100">
 				{selectedStorage.name}
 			</div>
 			<ul
-				tabindex="0"
+				tabindex="-1"
 				class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
 			>
 				{#each storages as storage}

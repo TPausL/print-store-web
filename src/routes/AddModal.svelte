@@ -22,6 +22,7 @@
 		faPaintBrush,
 		faPlus,
 		faRuler,
+		faRulerHorizontal,
 		faShapes,
 		faSwatchbook
 	} from '@fortawesome/free-solid-svg-icons';
@@ -48,6 +49,14 @@
 	let should = $state(0);
 	let hex = $derived(color?.displayHex);
 
+	const clear = () => {
+		size = undefined;
+		shape = undefined;
+		color = undefined;
+		storage = undefined;
+		is = 0;
+		should = 0;
+	};
 	const submit = async () => {
 		const res = await createStorageProductAndProduct({
 			body: {
@@ -64,17 +73,12 @@
 		if (res.status < 400) {
 			modalRef?.close();
 			invalidate('app:db');
-			size = undefined;
-			shape = undefined;
-			color = undefined;
-
-			is = 0;
-			should = 0;
+			clear();
 			toast.success('Produkt hinzugefügt', {
 				style: 'background-color: #16a085; color: white;'
 			});
 		} else {
-			const msg = res.response.data.message[0] ?? res.message;
+			const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
 			toast.error(msg, {
 				style: 'background-color: #dc2626; color: white;'
 			});
@@ -103,7 +107,7 @@
 						<FontAwesomeIcon icon={faBoxesPacking} />
 						<span>{item?.name}</span>
 					{:else}
-						<span>Farbe auswählen</span>
+						<span>Lager auswählen</span>
 					{/if}
 				</div>
 			{/snippet}
@@ -112,13 +116,14 @@
 				items={storages}
 				textKey="name"
 				bind:selected={storage}
-				placeholder="Größe auswählen"
 				{selectedText}
 			/>
 		</div>
 		<input type="hidden" name="_method" value="_PATCH" />
 		<fieldset class="fieldset mb-8">
-			<legend class="fieldset-legend text-lg mb-1"><FontAwesomeIcon icon={faRuler} /> Größe</legend>
+			<legend class="fieldset-legend text-lg mb-1"
+				><FontAwesomeIcon icon={faRulerHorizontal} /> Größe</legend
+			>
 
 			<Select items={sizes} bind:selected={size} placeholder="Größe auswählen" />
 			<legend class="fieldset-legend text-lg mb-1"
@@ -179,7 +184,9 @@
 			</div>
 		</fieldset>
 
-		<button class="btn btn-primary flex-1 self-end w-fit" onclick={submit}>Add product</button>
+		<div class="flex justify-end">
+			<button class="btn btn-primary w-fit" onclick={submit}>Add product</button>
+		</div>
 	</div>
 	<Toaster position="top-right" />
 </dialog>

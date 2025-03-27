@@ -7,11 +7,11 @@
 	import { incrementStorageProductsAmounts } from '$lib/generated/client';
 
 	let { storageProd }: { storageProd: PageData['products'][0] } = $props();
-	const prod = storageProd?.product;
+	const prod = $derived(storageProd?.product);
 	$effect(() => console.log(storageProd.id));
 	async function handleChange({ is = 0, sold = 0 }: { is?: number; sold?: number }) {
 		try {
-			const res = incrementStorageProductsAmounts({
+			const res = await incrementStorageProductsAmounts({
 				path: { id: storageProd.id },
 				body: { is, sold }
 			});
@@ -19,7 +19,6 @@
 			console.log(res);
 			if (res.status >= 400) {
 				const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
-				console.log("Couldn't delete product", msg);
 				toast.error(msg, {
 					style: 'background-color: #dc2626; color: white;'
 				});
@@ -36,7 +35,7 @@
 <tr class="p-1 border-none">
 	<td>{prod.size.text}</td>
 	<td>
-		<i class="fa-solid fa-circle mr-2" style="color: {prod.color.displayHex}" />
+		<i class="fa-solid fa-circle mr-2" style="color: {prod.color.displayHex}"></i>
 		<span>{prod.color.text}</span>
 	</td>
 	<td>{prod.shape.text} </td>

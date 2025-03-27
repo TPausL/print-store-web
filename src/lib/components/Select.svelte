@@ -43,7 +43,7 @@
 	</div>
 	<ul
 		tabindex="-1"
-		class="dropdown-content menu bg-base-100 rounded-box z-50 w-full p-2 shadow-sm overflow-scroll max-h-80 flex-nowrap"
+		class="dropdown-content menu bg-base-100 rounded-box z-50 w-full p-2 shadow-sm overflow-scroll max-h-48 flex-nowrap"
 	>
 		{#each items as i}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
