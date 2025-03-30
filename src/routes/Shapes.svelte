@@ -34,7 +34,7 @@
 				><div class="flex items-center">
 					<EditSpan onSave={(val) => handleChange('text', shape, val)} text={shape.text} />
 					<button
-						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+						class="btn btn-circle btn-ghost btn-sm ml-2 text-error"
 						on:click={() => {
 							deleteShape({ path: { id: shape.id } }).then(async (res) => {
 								if (res.status > 400) {
@@ -49,7 +49,7 @@
 								}
 							});
 						}}
-						><FontAwesomeIcon icon={faTrash} />
+						><FontAwesomeIcon icon={faTrash}  />
 					</button>
 				</div>
 			</td>

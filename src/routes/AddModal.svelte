@@ -21,10 +21,14 @@
 		faCirclePlus,
 		faPaintBrush,
 		faPlus,
+		faPlusMinus,
 		faRuler,
 		faRulerHorizontal,
 		faShapes,
-		faSwatchbook
+		faSwatchbook,
+
+		faX
+
 	} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import _ from 'lodash';
@@ -38,13 +42,25 @@
 		storages: ReturnStorageData[];
 		selectedStorage: ReturnStorageData;
 	}
-	let { colors, sizes, shapes, storages, selectedStorage, ...rest }: AddModalProps = $props();
-
+	let {
+		colors,
+		sizes,
+		shapes,
+		storages,
+		selectedStorage,
+		...rest
+	}: AddModalProps = $props();
 	let modalRef;
 	let size: ReturnSizeData | undefined = $state();
 	let shape: ReturnShapeData | undefined = $state();
 	let color: ReturnColorData | undefined = $state();
-	let storage: ReturnStorageData | undefined = $state(selectedStorage);
+	let storage: ReturnStorageData | undefined = $state();
+	let cont: boolean = $state(false);
+
+	const updateStorage = (value: ReturnStorageData) => {
+		storage = value;
+	};
+
 	let is = $state(0);
 	let should = $state(0);
 	let hex = $derived(color?.displayHex);
@@ -53,7 +69,6 @@
 		size = undefined;
 		shape = undefined;
 		color = undefined;
-		storage = undefined;
 		is = 0;
 		should = 0;
 	};
@@ -67,11 +82,14 @@
 					shapeId: shape?.id,
 					sizeId: size?.id
 				},
-				storageId: storage?.id
+				storageId: selectedStorage?.id
 			}
 		});
 		if (res.status < 400) {
-			modalRef?.close();
+			if(!cont) {
+				modalRef?.close();
+				
+			}
 			invalidate('app:db');
 			clear();
 			toast.success('Produkt hinzugefügt', {
@@ -88,15 +106,18 @@
 
 <button
 	class="btn btn-lg btn-circle btn-primary fixed bottom-5 right-5"
-	onclick={() => {
-		console.log(modalRef);
-		modalRef?.showModal();
-	}}
+	onclick={() => modalRef?.showModal()}
 >
 	<FontAwesomeIcon size="2xl" icon={faPlus} />
 </button>
 <dialog bind:this={modalRef} class="modal">
 	<div class="modal-box overflow-hidden flex flex-col">
+		<button class="btn btn-xs btn-circle mb-4 self-end" onclick={() => {
+			modalRef?.close();
+			clear();
+		}}>
+			<FontAwesomeIcon icon={faX} />
+		</button>
 		<div class="flex justify-between">
 			<h3 class="text-lg font-bold mb-8">
 				<FontAwesomeIcon size="xl" icon={faCirclePlus} /> Produkt hinzufügen
@@ -115,7 +136,8 @@
 				class="!w-1/3"
 				items={storages}
 				textKey="name"
-				bind:selected={storage}
+				
+				bind:selected={selectedStorage}
 				{selectedText}
 			/>
 		</div>
@@ -154,16 +176,15 @@
 			<div class="flex mt-8">
 				<div class="flex-6">
 					<legend class="fieldset-legend text-lg mb-1"
-						><FontAwesomeIcon icon={faBoxesStacked} /> Ist</legend
+						><FontAwesomeIcon icon={faPlusMinus} /> Menge</legend
 					>
 					<input
-						onwheel={(e) => (is += e.deltaY < 0 ? 1 : is >= 1 ? -1 : 0)}
+						onwheel={(e) => (is += e.deltaY < 0 ? 1 : -1)}
 						type="number"
 						bind:value={is}
 						class="input validator input-secondary w-10/12"
 						required
 						placeholder="Im Lager ..."
-						min="0"
 					/>
 				</div>
 				<div class="flex-6">
@@ -172,7 +193,6 @@
 					>
 					<input
 						onwheel={(e) => (should += e.deltaY < 0 ? 1 : should >= 1 ? -1 : 0)}
-						onscroll={(e) => console.log(e)}
 						bind:value={should}
 						type="number"
 						class="input validator input-secondary w-10/12"
@@ -185,7 +205,11 @@
 		</fieldset>
 
 		<div class="flex justify-end">
-			<button class="btn btn-primary w-fit" onclick={submit}>Add product</button>
+			<div class="flex items-center mr-4">
+				<label class="mr-2">Weiter hinzufügen</label>
+				<input type="checkbox" bind:checked={cont} class="checkbox checkbox-primary" />
+			</div>
+			<button class="btn btn-primary w-fit" onclick={submit}>Hinzufügen</button>
 		</div>
 	</div>
 	<Toaster position="top-right" />

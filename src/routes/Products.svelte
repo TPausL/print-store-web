@@ -37,13 +37,6 @@
 	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = $state([]);
 	let search = $state('');
 
-	//let selectedStorage = $state(storages[0] ?? { name: 'Loading...' });
-	$effect(() =>
-		console.log(
-			sortBy.map((s) => s.col),
-			sortBy.map((s) => s.dir)
-		)
-	);
 	let filteredProds = $derived(
 		orderBy(
 			filter(products, (storageProd) => {
@@ -58,7 +51,6 @@
 			sortBy.map((s) => s.dir)
 		)
 	);
-	$effect(() => console.log(filteredProds));
 	function toggleSort(col: SortCol) {
 		let sort = find(sortBy, { col: col });
 		if (!sort) {

@@ -66,10 +66,9 @@
 				</td>
 				<td>
 					<button
-						class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+						class="btn btn-circle btn-ghost btn-sm ml-2 text-error"
 						onclick={async () => {
 							const res = await deleteSize({ path: { id: size.id } });
-							console.log(res.status);
 							if (res.status >= 400) {
 								toast.error(
 									res.response.data.message ?? res.response.data.message[0] ?? res.message,

@@ -38,7 +38,6 @@
 							on:input={(e) => {
 								clearTimeout(saveTimeout);
 								saveTimeout = setTimeout(() => {
-									console.log('change');
 
 									handleColorHexChange(color, e.detail.hex as string);
 								}, 1000);
@@ -53,7 +52,7 @@
 							onSave={(newText) => handleColorNameChange(color, newText)}
 						/>
 						<button
-							class="btn btn-circle btn-ghost btn-sm ml-2 text-primary"
+							class="btn btn-circle btn-ghost btn-sm ml-2 text-error"
 							onclick={() => {
 								deleteColor({ path: { id: color.id } }).then(async (res) => {
 									if (res.status >= 400) {

@@ -1,22 +1,45 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import { faCashRegister, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faCashRegister,
+		faCross,
+		faMinus,
+		faPlus,
+		faTrash,
+		faX
+	} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { PageData } from './$types';
 	import toast from 'svelte-french-toast';
-	import { incrementStorageProductsAmounts } from '$lib/generated/client';
+	import { deleteStorageProducts, incrementStorageProductsAmounts } from '$lib/generated/client';
 
 	let { storageProd }: { storageProd: PageData['products'][0] } = $props();
 	const prod = $derived(storageProd?.product);
 	$effect(() => console.log(storageProd.id));
-	async function handleChange({ is = 0, sold = 0 }: { is?: number; sold?: number }) {
+	async function handleChange({ is, sold = 0 }: { is?: number; sold?: number }) {
 		try {
 			const res = await incrementStorageProductsAmounts({
 				path: { id: storageProd.id },
 				body: { is, sold }
 			});
 
-			console.log(res);
+			if (res.status >= 400) {
+				const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
+				toast.error(msg, {
+					style: 'background-color: #dc2626; color: white;'
+				});
+				return;
+			} else {
+				invalidate('app:db');
+			}
+		} catch (e) {
+			console.log("Couldn't delete product", e);
+		}
+	}
+	async function deleteStorageProd() {
+		try {
+			const res = await deleteStorageProducts({ path: { id: storageProd.id } });
+
 			if (res.status >= 400) {
 				const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
 				toast.error(msg, {
@@ -47,16 +70,20 @@
 			{storageProd.is}
 		</h1></td
 	>
-	<td><span class="badge ml-1 badge-lg badge-success">{storageProd.sold}</span></td>
-	<td class="text-nowrap">
-		<button onclick={() => handleChange({ is: -1 })} class="btn btn-md btn-error btn-circle mr-1">
-			<FontAwesomeIcon icon={faTrash} />
-		</button>
-		<button onclick={() => handleChange({ sold: 1 })} class="btn btn-md btn-error btn-circle mr-1">
+	<td><span class="badge ml-1 badge-lg badge-secondary">{storageProd.sold}</span></td>
+	<td class="text-nowrap join">
+		
+		<button onclick={() => handleChange({ sold: 1 })} class="btn btn-md join-item ">
 			<FontAwesomeIcon icon={faCashRegister} />
 		</button>
-		<button onclick={() => handleChange({ is: 1 })} class="btn btn-md btn-success btn-circle mr-1">
+		<button onclick={() => handleChange({ is: 1 })} class="btn btn-md  join-item ">
 			<FontAwesomeIcon icon={faPlus} />
+		</button>
+		<button onclick={() => handleChange({ is: -1 })} class="btn btn-md join-item ">
+			<FontAwesomeIcon icon={faMinus} />
+		</button>
+		<button onclick={() => deleteStorageProd()} class="btn btn-md join-item ">
+			<FontAwesomeIcon icon={faTrash} />
 		</button>
 	</td>
 </tr>

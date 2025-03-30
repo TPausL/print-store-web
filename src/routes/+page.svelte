@@ -98,6 +98,6 @@
 		</div>
 	</div>
 
-	<Products {selectedStorage} {storages} {colors} {products} {shapes} {sizes} />
+	<Products bind:selectedStorage {storages} {colors} {products} {shapes} {sizes} />
 	<AddModal {colors} {shapes} {sizes} {storages} {selectedStorage} />
 </div>
