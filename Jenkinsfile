@@ -20,9 +20,8 @@ pipeline {
                 }
             }
         }
-    }
 
-    stage('Update GitOps') {
+        stage('Update GitOps') {
             when {
                 expression {
                     return localBranchToGitopsValuesPath.containsKey(getLocalBranchName())
@@ -34,5 +33,6 @@ pipeline {
                     updateGitops(appName: appName, valuesPath: valuesPath, credentialsId: 'tpausl-github-user', gitOpsRepo: 'https://github.com/tpausl/gitops.git', fileTypeToChange: 'deployment', containerName: 'print-assist')
                 }
             }
+        }
     }
 }
