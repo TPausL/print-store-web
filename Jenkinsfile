@@ -18,7 +18,14 @@ pipeline {
             steps {
                 container('kaniko') {
                     script {
-                        buildDockerImage(additionalImageTags: ['latest'])
+                        withCredentials([
+                            string(credentialsId: 'PUBLIC_API_HOST', variable: 'PUBLIC_API_HOST'),
+                        ]) {
+                            buildDockerImage(additionalImageTags: ['latest'],
+                                buildArgs: [
+                                    "PUBLIC_API_HOST=${PUBLIC_API_HOST}"
+                                ])
+                        }
                     }
                 }
             }

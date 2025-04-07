@@ -1,5 +1,7 @@
 FROM node:alpine
 
+ARG PUBLIC_API_HOST
+ENV PUBLIC_API_HOST=$PUBLIC_API_HOST
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -18,9 +20,8 @@ RUN npm run gen:client
 RUN npm run build
 
 
-
 # Expose the port that the application will run on
-EXPOSE 5000
+EXPOSE 3000
 
 # Set the command to run the application
 CMD ["node", "build"]
