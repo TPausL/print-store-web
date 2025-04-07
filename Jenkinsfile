@@ -9,6 +9,9 @@ pipeline {
             inheritFrom 'kaniko-template'
         }
     }
+    environment {
+        PUBLIC_API_HOST  = credentials('PUBLIC_API_HOST')
+    }
 
     stages {
         stage('Build and Tag Image') {
