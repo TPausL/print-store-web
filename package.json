@@ -49,6 +49,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^6.5.2",
+		"@fortawesome/fontawesome-svg-core": "^6.7.2",
 		"@fortawesome/free-solid-svg-icons": "^6.5.2",
 		"@fortawesome/svelte-fontawesome": "^0.2.2",
 		"@hey-api/client-axios": "^0.6.2",
