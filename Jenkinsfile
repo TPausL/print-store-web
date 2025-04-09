@@ -1,7 +1,7 @@
 @Library('teckdigital') _
 def appName = 'print-store-web'
 def localBranchToGitopsValuesPath = [
-    'main': 'print-management/workloads/store/deployment.yml',
+    'master': 'print-management/workloads/store/deployment.yml',
 ]
 pipeline {
     agent {
