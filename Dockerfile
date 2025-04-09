@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:alpine as build
 
 ARG PUBLIC_API_HOST
 ENV PUBLIC_API_HOST=$PUBLIC_API_HOST
@@ -18,6 +18,16 @@ RUN npm run gen:client
 
 # Build the SvelteKit application
 RUN npm run build
+
+
+FROM node:alpine as production
+WORKDIR /app
+
+COPY package*.json ./
+COPY --from=build /app/build ./build
+RUN npm install --production --legacy-peer-deps
+RUN npm run gen:client
+
 
 
 # Expose the port that the application will run on

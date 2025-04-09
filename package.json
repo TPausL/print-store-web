@@ -44,7 +44,8 @@
 		"tslib": "^2.4.1",
 		"tsx": "^4.19.3",
 		"typescript": "^5.0.0",
-		"typescript-eslint": "^8.0.0-alpha.20"
+		"typescript-eslint": "^8.0.0-alpha.20",
+		"@types/lodash": "^4.17.6"
 	},
 	"type": "module",
 	"dependencies": {
@@ -55,7 +56,6 @@
 		"@hey-api/client-axios": "^0.6.2",
 		"@sveltejs/adapter-node": "^5.2.0",
 		"@tailwindcss/typography": "^0.5.13",
-		"@types/lodash": "^4.17.6",
 		"axios": "^1.8.3",
 		"colord": "^2.9.3",
 		"dotenv": "^16.4.7",
