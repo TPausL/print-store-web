@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
-                    updateGitops(appName: appName, valuesPath: valuesPath, credentialsId: 'tpausl-github-user', gitOpsRepo: 'https://github.com/tpausl/gitops.git', fileTypeToChange: 'deployment', containerName: 'print-assist')
+                    updateGitops(appName: appName, valuesPath: valuesPath, credentialsId: 'tpausl-github-user', gitOpsRepo: 'https://github.com/tpausl/gitops.git', fileTypeToChange: 'deployment', containerName: 'main')
                 }
             }
         }
