@@ -85,25 +85,27 @@
 		</label>
 
 		<div class="dropdown dropdown-start flex-[3]">
-			<div tabindex="-1" role="button" class="btn m-1 w-full bg-base-100">
-				{selectedStorage.name}
+			<div tabindex="-1" role="button" class={`btn m-1 w-full ${selectedStorage?.name ? "bg-base-100" : "btn-error"}`}>
+				{selectedStorage?.name ?? "No Storages exist yet!"}
 			</div>
-			<ul
-				tabindex="-1"
-				class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
-			>
-				{#each storages as storage}
-					<li>
-						<a
-							onclick={() => {
-								//@ts-ignore
-								document.activeElement.blur();
-								selectedStorage = find(storages, { id: storage.id });
-							}}>{storage.name}</a
-						>
-					</li>
-				{/each}
-			</ul>
+			{#if storages.length > 0}
+				<ul
+					tabindex="-1"
+					class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
+				>
+					{#each storages as storage}
+						<li>
+							<a
+								onclick={() => {
+									//@ts-ignore
+									document.activeElement.blur();
+									selectedStorage = find(storages, { id: storage.id });
+								}}>{storage.name}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	</div>
 	<div class="h-full overflow-scroll">
