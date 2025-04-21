@@ -85,8 +85,12 @@
 		</label>
 
 		<div class="dropdown dropdown-start flex-[3]">
-			<div tabindex="-1" role="button" class={`btn m-1 w-full ${selectedStorage?.name ? "bg-base-100" : "btn-error"}`}>
-				{selectedStorage?.name ?? "No Storages exist yet!"}
+			<div
+				tabindex="-1"
+				role="button"
+				class={`btn m-1 w-full ${selectedStorage?.name ? 'bg-base-100' : 'btn-error'}`}
+			>
+				{selectedStorage?.name ?? 'No Storages exist yet!'}
 			</div>
 			{#if storages.length > 0}
 				<ul
@@ -109,10 +113,10 @@
 		</div>
 	</div>
 	<div class="h-full overflow-scroll">
-		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent">
+		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent px-1">
 			<thead>
 				<tr class="bg-transparent border-none text-base backdrop-blur-sm">
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
 							<button onclick={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
@@ -120,7 +124,7 @@
 							</button>
 						</div>
 					</th>
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
 								onclick={() => toggleSort(SortCol.COLOR)}
@@ -131,7 +135,7 @@
 						</div></th
 					>
 
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
 								onclick={() => toggleSort(SortCol.SHAPE)}
@@ -142,7 +146,7 @@
 						</div>
 					</th>
 
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faBullseye} />Soll
 							<button onclick={() => toggleSort(SortCol.SHOULD)} class="btn btn-circle btn-ghost">
@@ -150,7 +154,7 @@
 							</button>
 						</div>
 					</th>
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faBoxesStacked} />Ist
 							<button onclick={() => toggleSort(SortCol.IS)} class="btn btn-circle btn-ghost">
@@ -158,7 +162,7 @@
 							</button>
 						</div>
 					</th>
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faDollarSign} />Verkauft
 							<button onclick={() => toggleSort(SortCol.SOLD)} class="btn btn-circle btn-ghost">
@@ -167,7 +171,7 @@
 						</div>
 					</th>
 
-					<th>
+					<th class="p-0">
 						<div class="flex items-center gap-2">
 							<FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten
 						</div>

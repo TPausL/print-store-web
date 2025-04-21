@@ -57,7 +57,7 @@
 <div class="flex flex-row dir justify-center gap-5 h-[calc(100%-88px)] p-5">
 	<div class="flex flex-col gap-5 basis-4/12">
 		<div class="card basis-5/12">
-			<Stats {data} />
+			<Stats {selectedStorage} {...data} />
 		</div>
 		<div class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-5 grow shrink min-h-0">
 			<div role="tablist" class="tabs tabs-boxed tabs-md bg-transparent relative max-h-full">
