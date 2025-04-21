@@ -1,10 +1,30 @@
 <script lang="ts">
 	import _ from 'lodash';
-	import type { PageData } from './$types';
-	export let data: PageData;
-	let { colors, shapes, sizes } = data;
-	$: products = data.products;
-	const { map, uniq, sumBy } = _;
+	let { products, selectedStorage } = $props();
+	const { map, uniq, sumBy, uniqWith, uniqBy, filter, sum } = _;
+	$effect(() => {
+		console.log('products', selectedStorage.id);
+	});
+
+	let should = $derived(
+		sumBy(
+			filter(products, (o) => o.storageId == selectedStorage.id),
+			'should'
+		)
+	);
+	let is = $derived(
+		sumBy(
+			filter(products, (o) => o.storageId == selectedStorage.id),
+			'is'
+		)
+	);
+	let sold = $derived(
+		sumBy(
+			filter(products, (o) => o.storageId == selectedStorage.id),
+			'sold'
+		)
+	);
+	let soldAll = $derived(sumBy(products, 'sold'));
 </script>
 
 <div class="stats stats-vertical shadow bg-gradient-to-tr from-secondary to-accent">
@@ -12,28 +32,32 @@
 		<div class="stat-figure">
 			<i class="fa-solid fa-cubes fa-2xl" />
 		</div>
-		<div class="stat-title">Produkte im Lager</div>
-		<div class="stat-value">{sumBy(products, 'count')}</div>
-		<div class="stat-desc">In {products?.length} versch. Kombinationen</div>
+		<div class="stat-title">Produkte in allen Lagern zusammen:</div>
+		<div class="stat-value">{sumBy(products, 'is')}</div>
+		<div class="stat-desc">In {uniqBy(products, 'productId').length} versch. Kombinationen</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure">
-			<i class="fa-solid fa-swatchbook fa-2xl" />
+			<i class="fa-solid fa-dollar fa-2xl" />
 		</div>
-		<div class="stat-title">Verschiedene Farben der Produkte im Lager</div>
-		<div class="stat-value">{uniq(map(products, 'colorId')).length}</div>
+		<div class="stat-title">Verkaufte Produkte insgesamt:</div>
+		<div class="stat-value">{soldAll}</div>
 		<div class="stat-desc">
-			Das entspricht {((100 * uniq(map(products, 'colorId')).length) / colors?.length) | 0} % aller Farben.
+			Davon {sold} aus {selectedStorage.name} ({((100 * sold) / soldAll) | 0} %)
 		</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure">
-			<i class="fa-solid fa-shapes fa-2xl" />
+			<i class="fa-solid fa-bullseye fa-2xl" />
 		</div>
-		<div class="stat-title">Verschiedene Formen der Produkte im Lager</div>
-		<div class="stat-value">{uniq(map(products, 'shapeId')).length}</div>
+		<div class="stat-title">
+			Produkte die für Lager {selectedStorage.name} hergestellt werden müssen:
+		</div>
+		<div class="stat-value">
+			{should - is}
+		</div>
 		<div class="stat-desc">
-			Das entspricht {((100 * uniq(map(products, 'shapeId')).length) / shapes?.length) | 0} % aller Formen.
+			{((100 * is) / should) | 0} % der Produkte sind also vorhanden.
 		</div>
 	</div>
 </div>
