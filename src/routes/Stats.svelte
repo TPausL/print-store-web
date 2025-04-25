@@ -1,7 +1,7 @@
 <script lang="ts">
 	import _ from 'lodash';
 	let { products, selectedStorage } = $props();
-	const { map, uniq, sumBy, uniqWith, uniqBy, filter, sum } = _;
+	const { map, uniq, sumBy, uniqWith, uniqBy, filter, sum, max } = _;
 	$effect(() => {
 		console.log('products', selectedStorage.id);
 	});
@@ -22,6 +22,16 @@
 		sumBy(
 			filter(products, (o) => o.storageId == selectedStorage.id),
 			'sold'
+		)
+	);
+	let toProduce = $derived(
+		sum(
+			map(
+				filter(products, (o) => o.storageId == selectedStorage.id),
+				(o) => {
+					return max([0, o.should - o.is]);
+				}
+			)
 		)
 	);
 	let soldAll = $derived(sumBy(products, 'sold'));
@@ -54,7 +64,7 @@
 			Produkte die für Lager {selectedStorage.name} hergestellt werden müssen:
 		</div>
 		<div class="stat-value">
-			{should - is}
+			{toProduce}
 		</div>
 		<div class="stat-desc">
 			{((100 * is) / should) | 0} % der Produkte sind also vorhanden.
