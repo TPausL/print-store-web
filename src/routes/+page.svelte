@@ -55,7 +55,7 @@
 <Toaster position={'top-right'} />
 
 <div class="flex flex-row dir justify-center gap-5 h-[calc(100%-88px)] p-5">
-	<div class="flex flex-col gap-5 basis-4/12">
+	<div class="flex flex-col gap-5 flex-1">
 		<div class="card basis-5/12">
 			<Stats {selectedStorage} {...data} />
 		</div>

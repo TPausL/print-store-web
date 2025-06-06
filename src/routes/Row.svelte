@@ -13,7 +13,7 @@
 	import toast from 'svelte-french-toast';
 	import { deleteStorageProducts, incrementStorageProductsAmounts } from '$lib/generated/client';
 
-	let { storageProd }: { storageProd: PageData['products'][0] } = $props();
+	let { storageProd }: { storageProd: PageData['products'][0] & { to_produce: number } } = $props();
 	const prod = $derived(storageProd?.product);
 	$effect(() => console.log(storageProd.id));
 	async function handleChange({ is, sold = 0 }: { is?: number; sold?: number }) {
@@ -70,6 +70,13 @@
 			class={`badge ml-1 badge-lg ${storageProd.is < storageProd.should ? 'badge-error' : 'badge-secondary'}`}
 		>
 			{storageProd.is}
+		</h1></td
+	>
+	<td
+		><h1
+			class={`badge ml-1 badge-lg ${storageProd.to_produce > 0 ? 'badge-error' : 'badge-secondary'}`}
+		>
+			{storageProd.to_produce < 0 ? 0 : storageProd.to_produce}
 		</h1></td
 	>
 	<td class="p-0 pl-1"

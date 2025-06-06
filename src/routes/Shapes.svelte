@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
-	import { deleteShape, updateShape } from '$lib/generated/client';
-	import { faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { createShape, deleteShape, updateShape } from '$lib/generated/client';
+	import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Shape } from '@prisma/client';
 	import toast from 'svelte-french-toast';
-	export let shapes;
+	const { shapes } = $props();
 
 	const handleChange = async (
 		prop: 'text' | 'width' | 'height',
@@ -25,34 +25,68 @@
 			if (prop == 'text') invalidate('app:db');
 		}
 	};
+
+	let addValue = $state('');
 </script>
 
 <table>
-	{#each shapes as shape}
+	<tbody>
+		{#each shapes as shape}
+			<tr>
+				<td
+					><div class="flex items-center">
+						<EditSpan onSave={(val) => handleChange('text', shape, val)} text={shape.text} />
+						<button
+							class="btn btn-circle btn-ghost btn-sm ml-2 text-error"
+							onclick={() => {
+								deleteShape({ path: { id: shape.id } }).then(async (res) => {
+									if (res.status > 400) {
+										toast.error(res.response.data.message, {
+											style: 'background-color: #dc2626; color: white;'
+										});
+									} else {
+										toast.success('Form gelöscht', {
+											style: 'background-color: #16a085; color: white;'
+										});
+										invalidate('app:db');
+									}
+								});
+							}}
+							><FontAwesomeIcon icon={faTrash} />
+						</button>
+					</div>
+				</td>
+			</tr>
+		{/each}
 		<tr>
-			<td
-				><div class="flex items-center">
-					<EditSpan onSave={(val) => handleChange('text', shape, val)} text={shape.text} />
-					<button
-						class="btn btn-circle btn-ghost btn-sm ml-2 text-error"
-						on:click={() => {
-							deleteShape({ path: { id: shape.id } }).then(async (res) => {
-								if (res.status > 400) {
-									toast.error(res.response.data.message, {
-										style: 'background-color: #dc2626; color: white;'
-									});
-								} else {
-									toast.success('Form gelöscht', {
-										style: 'background-color: #16a085; color: white;'
-									});
-									invalidate('app:db');
-								}
+			<td class="flex items-center flex-row join">
+				<input bind:value={addValue} placeholder="Name der Form" class="input input-sm mx-2" />
+				<button
+					class="btn btn-circle btn-ghost btn-sm ml-8"
+					onclick={async () => {
+						const res = await createShape({
+							body: {
+								text: addValue
+							}
+						});
+						if (res.status >= 400) {
+							const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
+							toast.error(msg, {
+								style: 'background-color: #dc2626; color: white;'
 							});
-						}}
-						><FontAwesomeIcon icon={faTrash}  />
-					</button>
-				</div>
+							return;
+						} else {
+							addValue = '';
+							invalidate('app:db');
+							toast.success('Successfully added color!', {
+								style: 'background-color: #16a085; color: white;'
+							});
+						}
+					}}
+				>
+					<FontAwesomeIcon size="xl" icon={faPlus} />
+				</button>
 			</td>
 		</tr>
-	{/each}
+	</tbody>
 </table>

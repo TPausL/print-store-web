@@ -1,6 +1,7 @@
 <script>
 	import '../app.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
+	import 'tailwindcss/tailwind.css';
 	import Logo from '$lib/Logo.png';
 </script>
 
@@ -10,7 +11,7 @@
 			<div class="navbar-start"></div>
 			<div class="navbar-center"><p class="font-bold text-3xl">TipelaDesign - Lagerbestand</p></div>
 			<div class="navbar-end">
-				<img src={Logo} height={24} class="h-[48px]" alt={"company logo"}/>
+				<img src={Logo} height={24} class="h-[48px]" alt={'company logo'} />
 			</div>
 		</div>
 	</div>

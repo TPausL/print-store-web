@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
-	import { faCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { faCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import ColorPicker from 'svelte-awesome-color-picker';
 	import { colord } from 'colord';
@@ -9,7 +9,7 @@
 	import ColorPickerWrapper from './ColorPickerWrapper.svelte';
 	import toast from 'svelte-french-toast';
 	import { error, json } from '@sveltejs/kit';
-	import { deleteColor, updateColor, type Color } from '$lib/generated/client';
+	import { deleteColor, updateColor, type Color, createColor } from '$lib/generated/client';
 
 	const { colors } = $props();
 
@@ -25,6 +25,9 @@
 		}
 	}
 
+	let addColor = $state('#000000');
+	let addValue = $state('');
+
 	let saveTimeout: unknown;
 </script>
 
@@ -38,7 +41,6 @@
 							on:input={(e) => {
 								clearTimeout(saveTimeout);
 								saveTimeout = setTimeout(() => {
-
 									handleColorHexChange(color, e.detail.hex as string);
 								}, 1000);
 							}}
@@ -71,6 +73,40 @@
 				</td>
 			</tr>
 		{/each}
+		<tr>
+			<td class="flex items-center flex-row join">
+				<ColorPicker bind:hex={addColor} components={{ wrapper: ColorPickerWrapper }} label={''} />
+				<input bind:value={addValue} placeholder="Name der Farbe" class="input input-sm mx-2" />
+				<button
+					class="btn btn-circle btn-ghost btn-sm ml-8"
+					onclick={async () => {
+						const res = await createColor({
+							body: {
+								text: addValue,
+								displayHex: addColor,
+								scanHex: addColor
+							}
+						});
+						if (res.status >= 400) {
+							const msg = res.response.data.message ?? res.response.data.message[0] ?? res.message;
+							toast.error(msg == 'Duplicate entry' ? 'Bitte wähle eine Farbe!' : msg, {
+								style: 'background-color: #dc2626; color: white;'
+							});
+							return;
+						} else {
+							addColor = '#000000';
+							addValue = '';
+							invalidate('app:db');
+							toast.success('Successfully added color!', {
+								style: 'background-color: #16a085; color: white;'
+							});
+						}
+					}}
+				>
+					<FontAwesomeIcon size="xl" icon={faPlus} />
+				</button>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <div id="portal" />

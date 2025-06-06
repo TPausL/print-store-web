@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import EditSpan from '$lib/components/EditSpan.svelte';
-	import { deleteSize, updateSize } from '$lib/generated/client';
-	import { faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { createSize, deleteSize, updateSize } from '$lib/generated/client';
+	import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import type { Size } from '@prisma/client';
+	import _ from 'lodash';
+	const { isArray } = _;
 	import toast from 'svelte-french-toast';
-	export let sizes;
+	let { sizes } = $props();
 
 	const handleChange = async (
 		prop: 'text' | 'width' | 'height',
@@ -25,6 +27,10 @@
 			if (prop == 'text') invalidate('app:db');
 		}
 	};
+
+	let addValue = $state('');
+	let addWidth = $state('');
+	let addHeight = $state('');
 </script>
 
 <table>
@@ -89,5 +95,61 @@
 				</td>
 			</tr>
 		{/each}
+		<tr>
+			<td>
+				<input bind:value={addValue} placeholder="Text" class="input input-sm mx-2 w-9/12" />
+			</td>
+			<td>
+				<input
+					bind:value={addWidth}
+					type="number"
+					min="1"
+					placeholder="Breite"
+					class="input input-sm mx-2 w-9/12"
+				/>
+			</td>
+			<td class="flex items-center flex-row join">
+				<input
+					bind:value={addHeight}
+					type="number"
+					min="1"
+					placeholder="Höhe"
+					class="input input-sm mx-2 w-9/12"
+				/>
+
+				<button
+					class="btn btn-circle btn-ghost btn-sm ml-8"
+					onclick={async () => {
+						const res = await createSize({
+							body: {
+								text: addValue,
+								width: addWidth,
+								height: addHeight
+							}
+						});
+						if (res.status >= 400) {
+							const msg = isArray(res.response.data.message)
+								? res.response.data.message[0]
+								: res.response.data.message ?? res.message;
+							console.log(msg);
+							toast.error(msg, {
+								style: 'background-color: #dc2626; color: white;'
+							});
+							return;
+						} else {
+							addHeight = 0;
+							addWidth = 0;
+							addValue = '';
+							invalidate('app:db');
+							toast.success('Successfully added color!', {
+								style: 'background-color: #16a085; color: white;'
+							});
+						}
+					}}
+				>
+					<FontAwesomeIcon size="xl" icon={faPlus} />
+				</button>
+			</td>
+		</tr>
 	</tbody>
 </table>
