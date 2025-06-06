@@ -54,12 +54,18 @@
 
 <Toaster position={'top-right'} />
 
-<div class="flex flex-row dir justify-center gap-5 h-[calc(100%-88px)] p-5">
-	<div class="flex flex-col gap-5 flex-1">
-		<div class="card basis-5/12">
+<div class="flex flex-col lg:flex-row justify-center gap-5 h-[calc(100%-88px)] p-5">
+	<div class="w-full lg:w-8/12 order-1">
+		<Products bind:selectedStorage {storages} {colors} {products} {shapes} {sizes} />
+	</div>
+
+	<div class="w-full lg:w-4/12 flex flex-col order-2">
+		<div class="card mb-5">
 			<Stats {selectedStorage} {...data} />
 		</div>
-		<div class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-5 grow shrink min-h-0">
+		<div
+			class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-5 grow shrink min-h-0 mt-0"
+		>
 			<div role="tablist" class="tabs tabs-boxed tabs-md bg-transparent relative max-h-full">
 				<input
 					type="radio"
@@ -97,7 +103,5 @@
 			</div>
 		</div>
 	</div>
-
-	<Products bind:selectedStorage {storages} {colors} {products} {shapes} {sizes} />
-	<AddModal {colors} {shapes} {sizes} {storages} {selectedStorage} />
 </div>
+<AddModal {colors} {shapes} {sizes} {storages} {selectedStorage} />

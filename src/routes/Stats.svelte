@@ -37,22 +37,30 @@
 	let soldAll = $derived(sumBy(products, 'sold'));
 </script>
 
-<div class="stats stats-vertical shadow bg-gradient-to-tr from-secondary to-accent">
+<div
+	class="stats stats-vertical shadow bg-gradient-to-tr from-secondary to-accent text-base sm:text-lg md:text-xl"
+>
 	<div class="stat">
 		<div class="stat-figure">
 			<i class="fa-solid fa-cubes fa-2xl" />
 		</div>
-		<div class="stat-title text-wrap">Produkte in allen Lagern zusammen:</div>
+		<div class="stat-title text-wrap text-sm sm:text-base md:text-lg font-semibold">
+			Produkte in allen Lagern zusammen:
+		</div>
 		<div class="stat-value">{sumBy(products, 'is')}</div>
-		<div class="stat-desc">In {uniqBy(products, 'productId').length} versch. Kombinationen</div>
+		<div class="stat-desc text-wrap text-xs sm:text-sm md:text-base">
+			In {uniqBy(products, 'productId').length} versch. Kombinationen
+		</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure">
 			<i class="fa-solid fa-dollar fa-2xl" />
 		</div>
-		<div class="stat-title">Verkaufte Produkte insgesamt:</div>
+		<div class="stat-title text-wrap text-sm sm:text-base md:text-lg font-semibold">
+			Verkaufte Produkte insgesamt:
+		</div>
 		<div class="stat-value">{soldAll}</div>
-		<div class="stat-desc">
+		<div class="stat-desc text-wrap text-xs sm:text-sm md:text-base">
 			Davon {sold} aus {selectedStorage.name} ({((100 * sold) / soldAll) | 0} %)
 		</div>
 	</div>
@@ -60,13 +68,13 @@
 		<div class="stat-figure">
 			<i class="fa-solid fa-bullseye fa-2xl" />
 		</div>
-		<div class="stat-title text-wrap">
+		<div class="stat-title text-wrap max-w-sm text-sm sm:text-base md:text-lg font-semibold">
 			Produkte die für Lager {selectedStorage.name} hergestellt werden müssen:
 		</div>
 		<div class="stat-value">
 			{toProduce}
 		</div>
-		<div class="stat-desc">
+		<div class="stat-desc text-wrap text-xs sm:text-sm md:text-base">
 			{((100 * is) / should) | 0} % der Produkte sind also vorhanden.
 		</div>
 	</div>
