@@ -84,8 +84,8 @@
 	}
 </script>
 
-<div class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-5 flex flex-col h-full">
-	<div class="flex w-full justify-center items-center flex-shrink-0">
+<div class="card shadow-2xl flex-2 bg-gradient-to-tr from-secondary to-accent p-5">
+	<div class="flex w-full justify-center items-center">
 		<label
 			class="input input-bordered flex flex-[9] items-center gap-2 focus-within:outline-none focus:outline-none"
 		>
@@ -121,12 +121,12 @@
 			{/if}
 		</div>
 	</div>
-	<div class="flex-grow overflow-auto min-h-0">
+	<div class="h-full overflow-scroll">
 		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent px-1">
 			<thead>
 				<tr class="bg-transparent border-none text-base backdrop-blur-sm">
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
 							<button onclick={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SIZE })?.dir} />
@@ -134,7 +134,7 @@
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
 								onclick={() => toggleSort(SortCol.COLOR)}
 								class="btn btn-circle btn-ghost"
@@ -145,7 +145,7 @@
 					>
 
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
 								onclick={() => toggleSort(SortCol.SHAPE)}
 								class="btn btn-circle btn-ghost"
@@ -156,7 +156,7 @@
 					</th>
 
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faBullseye} />Soll
 							<button onclick={() => toggleSort(SortCol.SHOULD)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHOULD })?.dir} />
@@ -164,7 +164,7 @@
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faBoxesStacked} />Ist
 							<button onclick={() => toggleSort(SortCol.IS)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.IS })?.dir} />
@@ -172,7 +172,7 @@
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faHourglassHalf} />TBD
 							<button
 								onclick={() => toggleSort(SortCol.TO_PRODUCE)}
@@ -183,7 +183,7 @@
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faDollarSign} />Vkft.
 							<button onclick={() => toggleSort(SortCol.SOLD)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SOLD })?.dir} />
@@ -192,7 +192,7 @@
 					</th>
 
 					<th class="p-0">
-						<div class="flex xl:gap-2 items-center">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten
 						</div>
 					</th>
