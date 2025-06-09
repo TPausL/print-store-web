@@ -9,7 +9,8 @@
 		SHAPE = 'product.shape.text',
 		SHOULD = 'should',
 		IS = 'is',
-		SOLD = 'sold'
+		SOLD = 'sold',
+		TO_PRODUCE = 'to_produce'
 	}
 
 	import {
@@ -17,6 +18,7 @@
 		faBullseye,
 		faDollarSign,
 		faHashtag,
+		faHourglassHalf,
 		faPen,
 		faRulerHorizontal,
 		faSearch,
@@ -36,10 +38,17 @@
 	}: PageData & { selectedStorage: ReturnStorageData } = $props();
 	let sortBy: { col: SortCol; dir: 'asc' | 'desc' }[] = $state([]);
 	let search = $state('');
-
+	let extended_prods = $derived(
+		map(products, (prod) => {
+			return {
+				...prod,
+				to_produce: prod.should - prod.is < 0 ? 0 : prod.should - prod.is
+			};
+		})
+	);
 	let filteredProds = $derived(
 		orderBy(
-			filter(products, (storageProd) => {
+			filter(extended_prods, (storageProd) => {
 				return (
 					(storageProd.product.size.text.toLowerCase().includes(search.toLowerCase()) ||
 						storageProd.product.color.text.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,16 +84,18 @@
 	}
 </script>
 
-<div class="card shadow-2xl basis-8/12 bg-gradient-to-tr from-secondary to-accent p-5">
-	<div class="flex w-full justify-center items-center">
+<div
+	class="card shadow-2xl flex-1 lg:flex-[2] bg-gradient-to-tr from-secondary to-accent p-3 lg:p-5 min-w-0 md:h-full md:flex md:flex-col"
+>
+	<div class="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-2">
 		<label
-			class="input input-bordered flex flex-[9] items-center gap-2 focus-within:outline-none focus:outline-none"
+			class="input input-bordered flex flex-1 sm:flex-[9] items-center gap-2 focus-within:outline-none focus:outline-none"
 		>
 			<FontAwesomeIcon class="text-[#9ca3af]" size={'sm'} icon={faSearch} />
 			<input bind:value={search} type="text" class="grow" placeholder="Search" />
 		</label>
 
-		<div class="dropdown dropdown-start flex-[3]">
+		<div class="dropdown dropdown-start flex-none sm:flex-[3]">
 			<div
 				tabindex="-1"
 				role="button"
@@ -112,32 +123,34 @@
 			{/if}
 		</div>
 	</div>
-	<div class="h-full overflow-scroll">
-		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent px-1">
+	<div class="md:flex-1 overflow-scroll min-w-0 md:min-h-0">
+		<table class="table table-pin-rows text-lg font-medium w-full bg-transparent px-1 min-w-0">
 			<thead>
 				<tr class="bg-transparent border-none text-base backdrop-blur-sm">
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} /> Größe
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faRulerHorizontal} />
+							<span class="hidden xl:block">Größe</span>
 							<button onclick={() => toggleSort(SortCol.SIZE)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SIZE })?.dir} />
 							</button>
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} />Farbe<button
-								onclick={() => toggleSort(SortCol.COLOR)}
-								class="btn btn-circle btn-ghost"
-							>
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faSwatchbook} /><span class="hidden xl:block"
+								>Farbe</span
+							><button onclick={() => toggleSort(SortCol.COLOR)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.COLOR })?.dir} />
 							</button>
 						</div></th
 					>
 
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faShapes} />Form<button
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faShapes} />
+
+							<span class="hidden xl:block">Form</span><button
 								onclick={() => toggleSort(SortCol.SHAPE)}
 								class="btn btn-circle btn-ghost"
 							>
@@ -147,24 +160,44 @@
 					</th>
 
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faBullseye} />Soll
+						<div class="flex xl:bg-red xl:gap-2 items-center align-center">
+							<FontAwesomeIcon class="mr-1" icon={faBullseye} /><span class="hidden xl:block"
+								>Soll</span
+							>
 							<button onclick={() => toggleSort(SortCol.SHOULD)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SHOULD })?.dir} />
 							</button>
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faBoxesStacked} />Ist
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faBoxesStacked} /><span class="hidden xl:block"
+								>Ist</span
+							>
 							<button onclick={() => toggleSort(SortCol.IS)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.IS })?.dir} />
 							</button>
 						</div>
 					</th>
 					<th class="p-0">
-						<div class="flex items-center gap-2">
-							<FontAwesomeIcon class="mr-1" icon={faDollarSign} />Verkauft
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faHourglassHalf} /><span class="hidden xl:block"
+								>Zu tun</span
+							>
+
+							<button
+								onclick={() => toggleSort(SortCol.TO_PRODUCE)}
+								class="btn btn-circle btn-ghost"
+							>
+								<SortIndicator sortDir={find(sortBy, { col: SortCol.TO_PRODUCE })?.dir} />
+							</button>
+						</div>
+					</th>
+					<th class="p-0">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
+							<FontAwesomeIcon class="mr-1" icon={faDollarSign} /><span class="hidden xl:block"
+								>Verkauft</span
+							>
 							<button onclick={() => toggleSort(SortCol.SOLD)} class="btn btn-circle btn-ghost">
 								<SortIndicator sortDir={find(sortBy, { col: SortCol.SOLD })?.dir} />
 							</button>
@@ -172,7 +205,7 @@
 					</th>
 
 					<th class="p-0">
-						<div class="flex items-center gap-2">
+						<div class="flex xl:bg-red xl:gap-2 items-center">
 							<FontAwesomeIcon class="mr-1" icon={faPen} />Bearbeiten
 						</div>
 					</th>
@@ -185,6 +218,29 @@
 					{/if}
 				{/each}
 			</tbody>
+			<tfoot class="border-none">
+				<tr class="bg-transparent border-none text-base backdrop-blur-sm">
+					<th>Gesamt: </th>
+					<th></th>
+					<th></th>
+					<th class="p-0 pl-1">
+						<span class="badge badge-lg badge-secondary ml-1">
+							{sumBy(filteredProds, 'should')}
+						</span>
+					</th>
+					<th>
+						<span class="badge badge-lg badge-secondary ml-1">{sumBy(filteredProds, 'is')}</span>
+					</th>
+					<th>
+						<span class="badge badge-lg badge-secondary ml-1">
+							{sumBy(filteredProds, 'to_produce') < 0 ? 0 : sumBy(filteredProds, 'to_produce')}
+						</span>
+					</th>
+					<th class="p-0 pl-1">
+						<span class="badge badge-lg badge-secondary ml-1">{sumBy(filteredProds, 'sold')}</span>
+					</th>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 </div>

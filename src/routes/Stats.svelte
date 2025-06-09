@@ -42,7 +42,7 @@
 		<div class="stat-figure">
 			<i class="fa-solid fa-cubes fa-2xl" />
 		</div>
-		<div class="stat-title">Produkte in allen Lagern zusammen:</div>
+		<div class="stat-title text-wrap">Produkte in allen Lagern zusammen:</div>
 		<div class="stat-value">{sumBy(products, 'is')}</div>
 		<div class="stat-desc">In {uniqBy(products, 'productId').length} versch. Kombinationen</div>
 	</div>
@@ -60,7 +60,7 @@
 		<div class="stat-figure">
 			<i class="fa-solid fa-bullseye fa-2xl" />
 		</div>
-		<div class="stat-title">
+		<div class="stat-title text-wrap">
 			Produkte die für Lager {selectedStorage.name} hergestellt werden müssen:
 		</div>
 		<div class="stat-value">
