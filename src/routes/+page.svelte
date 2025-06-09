@@ -54,12 +54,25 @@
 
 <Toaster position={'top-right'} />
 
-<div class="flex flex-row dir justify-center gap-5 h-[calc(100%-88px)] p-5">
-	<div class="flex flex-col gap-5 flex-1">
-		<div class="card basis-5/12">
+<div
+	class="flex flex-col md:flex-row justify-center gap-3 lg:gap-5 h-[calc(100%-88px)] p-3 lg:p-5 min-w-0"
+>
+	<!-- Products table - shows first on mobile, second on desktop -->
+	<div class="flex-1 md:flex-[2] md:order-2 min-w-0">
+		<Products bind:selectedStorage {storages} {colors} {products} {shapes} {sizes} />
+	</div>
+
+	<!-- Left cards - shows second on mobile, first on desktop -->
+	<div
+		class="flex flex-col gap-3 lg:gap-5 flex-1 md:flex-[1] md:order-1 min-w-0"
+		style="min-width: 25%"
+	>
+		<div class="card min-w-0">
 			<Stats {selectedStorage} {...data} />
 		</div>
-		<div class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-5 grow shrink min-h-0">
+		<div
+			class="card shadow-2xl bg-gradient-to-tr from-secondary to-accent p-3 lg:p-5 grow min-h-[30vh] min-w-0"
+		>
 			<div role="tablist" class="tabs tabs-boxed tabs-md bg-transparent relative max-h-full">
 				<input
 					type="radio"
@@ -98,6 +111,5 @@
 		</div>
 	</div>
 
-	<Products bind:selectedStorage {storages} {colors} {products} {shapes} {sizes} />
 	<AddModal {colors} {shapes} {sizes} {storages} {selectedStorage} />
 </div>
