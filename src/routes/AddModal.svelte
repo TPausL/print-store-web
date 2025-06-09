@@ -102,7 +102,7 @@
 </script>
 
 <button
-	class="btn btn-lg btn-circle btn-primary fixed bottom-5 right-5"
+	class="btn btn-lg btn-circle btn-primary fixed bottom-5 right-5 z-10"
 	onclick={() => modalRef?.showModal()}
 >
 	<FontAwesomeIcon size="2xl" icon={faPlus} />
